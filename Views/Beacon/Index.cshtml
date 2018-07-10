@@ -1,0 +1,130 @@
+﻿@model IEnumerable<LiveKart.Entities.Beacon>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div style="margin-right: 120px; margin-top: 20px; margin-bottom: 20px">
+
+    <a class="btn btn-large btn-primary" href="@Url.Action("Create")" style="float:right;">
+        New Beacon</a></div>
+        <div style="margin-right: 120px; margin-top: 20px; margin-bottom: 20px">
+    <a class="btn btn-large btn-secondary" href="@Url.Action("Upload")" style="float:right;">
+        Add Beacons Via .csv</a></div>
+        
+        @*<div class="file-btn">
+        <span>Add Beacons via .csv</span>
+        <input type="file" name="fileinput" id="fileinput" class="btn btn-large btn-secondary" value="Add Beacons Via .csv" @Url.Action("Upload","Beacon")/>
+        </div>*@
+
+        
+<br />
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Manage Beacon</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+<!-- End .title -->
+<div class="content top">
+    <div class="container">
+        @if (Model.Count() == 0)
+        { 
+            <h3>
+                No beacon created.
+            </h3>
+        }
+        @if (Model.Count() > 0)
+        {          
+            <table class="responsive table table-striped table-bordered dTable">
+                <thead>
+                    <tr>
+                        
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.BeaconName)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Description)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.BeaconID)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.BatteryLevel)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Active)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string delBtnId = "btnDelete" + item.BeaconID;
+                        <tr>
+                            
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BeaconName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.BeaconID)
+                            </td>
+                            <td>
+                                @if (item.BatteryLevel == "0") { 
+                                    <img src="../../Content/img/BatteryEmpty.png" title="Empty" />
+                                }
+                                else if (item.BatteryLevel == "1") { 
+                                    <img src="../../Content/img/Battery25.png" title="Low" />
+                                }
+                                else if (item.BatteryLevel == "2") { 
+                                    <img src="../../Content/img/75_percent.png" title="Good"/>
+                                }
+                                else if (item.BatteryLevel == "3")
+                                { 
+                                    <img src="../../Content/img/100_percent.png" title="Full"/>
+                                }
+                                else { 
+                                    <img src="../../Content/img/BatteryEmpty.png"  title="Empty" />
+                                }
+                            </td>
+                            <td>
+                                <div class="toggle slide">
+                                <input type="checkbox" name="Active" id="Active"  @(item.Active.GetValueOrDefault(false) ? "checked" : "") disabled/>
+                                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                            </div>
+                            </td>
+                            <td class="ms">
+                                <div class="btn-group1">
+                                    @if (item.BeaconDeployments == null)
+                                    {
+                                        <a href="@Url.Action("Deploy", "Beacon", new { beaconID = item.BeaconID })" class="btn btn-small" rel="tooltip" data-placement="left" data-original-title=" Deploy ">
+                                            <img src="@Url.Content("~/Content/img/Grid/active.png")" width="10" height="10" alt="Edit" title="Deploy" /></a>
+                                    }
+                                    &nbsp; <a href="@Url.Action("Edit", "Beacon", new { id = item.Id })" class="btn btn-small" rel="tooltip" data-placement="left" data-original-title=" modify ">
+                                        <img src="@Url.Content("~/Content/img/Grid/editg.gif")" width="10" height="10" alt="Edit" title="Edit" /></a>&nbsp;
+                                    <a href="@Url.Action("Delete", "Beacon", new { id = item.Id })" id='@delBtnId' class="btn btn-inverse btn-small" rel="tooltip" data-placement="bottom" data-original-title=" Remove ">
+                                        <img src="@Url.Content("~/Content/img/Grid/deleteg.png")" width="10" height="10" alt="Delete" title="Delete" /></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>
+
+

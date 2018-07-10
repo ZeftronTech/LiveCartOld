@@ -1,0 +1,114 @@
+﻿@model LiveKart.Entities.Beacon
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Edit Beacon</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+<div id="content">
+    <div class="container">
+        <div class="row-fluid">
+            @using (Html.BeginForm("Edit", "Beacon", FormMethod.Post, new { id = "newBeacon", @class = "form-horizontal" }))
+            {            
+                @Html.HiddenFor(model => model.Id)    
+                @Html.HiddenFor(model => model.BeaconID)    
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        @Html.LabelFor(model => model.BeaconName, new { @class = "form-label span4" })
+                        <div class="row-fluid span4">
+                            @Html.TextBoxFor(model => model.BeaconName, new { required = "", @class = "row-fluid" })
+                        </div>
+                    </div>
+                </div>  
+                    
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        @Html.LabelFor(model => model.Description, new { @class = "form-label span4" })
+                        <div class="row-fluid span4">
+                            @Html.TextBoxFor(model => model.Description, new { @class = "row-fluid" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        @Html.LabelFor(model => model.Active, new { @class = "form-label span4" })
+                        <div class="row-fluid span1">
+                            <div class="toggle slide">
+                                <input type="checkbox" name="Active" id="Active" data-val="true" value="true" @(Model.Active.GetValueOrDefault(false) ? "checked" : "") />
+                                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                                       
+                <div class="row-fluid form-actions">
+                    <div class="span12">
+                        <input type="submit" value="Update" class="btn btn-large btn-primary" />
+                        @Html.ActionLink("Cancel", "Index", 0, new { @class = "btn btn-large btn-secondary" })
+                    </div>
+                </div>
+                
+            }
+        </div>
+    </div>
+</div>
+<script  type="text/javascript" src="@Url.Content("~/Content/js/plugins/jquery.uniform.min.js")"> </script>
+@section JavaScript {
+    <script type="text/javascript">
+    	$(window).load(function () {
+    		// validate signup form on keyup and submit
+    		$("#newBeacon").validate({
+    			rules: {
+    				BeaconName: { required: true, maxlength: 50 },
+    				Description: { maxlength: 250 }
+    			},
+    			messages: {
+    				BeaconName: { required: "Required!", maxlength: "Seems too long." },
+    				Description: { maxlength: "Seems too long." }
+    			}
+    		});
+
+    		$('#newBeacon').submit(function () {
+    			if ($(this).validate().form()) {
+    				$('body').showLoading();
+    				debugger;
+    				$.ajax({
+    					url: this.action,
+    					type: this.method,
+    					data: $(this).serialize(),
+    					success: function (result) {
+    						if (result.Status == "Ok") {
+    							showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+    							setTimeout(function () {
+    								window.location = result.ReturnUrl;
+    							}, 300);
+    						}
+    						else {
+    							$('body').hideLoading();
+    							showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+    						}
+    					},
+    					error: function (result) {
+    						$('body').hideLoading();
+    						showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+    					}
+    				});
+    			}
+    			return false;
+    		});
+    	});
+    </script>
+}

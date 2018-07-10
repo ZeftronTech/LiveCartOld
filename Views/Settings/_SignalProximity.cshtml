@@ -1,0 +1,90 @@
+﻿@model LiveKart.Entities.Settings
+<div id="editSignalProximityForm">
+    @Html.HiddenFor(m=> m.CompanyId)
+    @Html.HiddenFor(m=>m.SettingId)
+    <div class="form-row row-fluid">
+        <div class="row-fluid">
+            <div class="span9">
+                <h2 id="tabTitle">Configure Proximity Settings</h2>
+            </div>
+        </div>
+        <br />
+        <div class="form-row row-fluid">
+            <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px; margin: 10px 0 10px 0">
+                <h5>Far (15 - 25 ft)</h5>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Minimum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.FarMinRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Maximum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.FarMaxRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row row-fluid">
+            <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px; margin: 10px 0 10px 0">
+                <h5>Near (10 - 15 ft)</h5>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Minimum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.NearMinRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Maximum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.NearMaxRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row row-fluid">
+            <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px; margin: 10px 0 10px 0">
+                <h5>Close (0 - 10 ft)</h5>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Minimum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.CloseMinRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Maximum RSSI</label>
+                <div class="span9">
+                    @Html.TextBoxFor(model => model.CloseMaxRSSI, new { @class = "span9" })
+                    <p>Some description text to go here.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid NotificationsTabButtons" style="margin-bottom: 20px;">
+        <input type="submit" value="Save" class="btn btn-large btn-primary SubmitBtn" id="SubmitBtn" />
+    </div>
+    <hr />
+</div>
+<script>
+</script>

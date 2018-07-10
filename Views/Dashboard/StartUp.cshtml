@@ -1,0 +1,65 @@
+﻿@{
+    ViewBag.Title = "StartUp";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div id="container2">
+    <div class="row-fluid ">
+        <div class="span12 box gradient ">
+            <div class="title">
+                <h3>
+                    <i class=" icon-bar-chart"></i><span>Welcome to Raffity!!!</span> <span class="btn-header">
+                    </span>
+                </h3>
+            </div>
+            <!-- End .title -->
+            <div class="content top">
+                <hr />
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed blandit, dolor at molestie
+                    bibendum, diam est imperdiet libero, vel malesuada augue metus ultricies velit.
+                    In semper, neque vel luctus ullamcorper, lectus ligula faucibus risus, eget ultrices
+                    nisl magna eu ligula. Proin ipsum metus, varius sit amet dapibus id, dapibus vel
+                    felis. Duis eu odio mauris. Maecenas pulvinar dignissim arcu, quis elementum erat
+                    volutpat ac. Ut et neque a justo scelerisque pellentesque. Maecenas ut quam vitae
+                    mi condimentum iaculis at sed erat.</p>
+                <hr />
+                <h3>
+                    <span>Quick Start...</span></h3>
+                <hr />
+
+
+                <table width="100%">
+                    <tr>
+                        <td style="width: 50%">
+                            <i class="icon-bolt"></i><a class="btn btn-link" href="@Url.Action("Create", "Event")">
+                                                         Create Event</a><br />
+                            <p style="padding-left: 20px">
+                                Create a new event & later you can configure it.</p>
+                        </td>
+                        <td style="width: 50%">
+                            <i class="icon-bolt"></i><a class="btn btn-link" href="@Url.Action("Create", "SalesPerson")">
+                                                         Create Sales Associate</a><br />
+                            <p style="padding-left: 20px">
+                                Create a new sales associate & later you can assign him an event.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%">
+                            <i class="icon-bolt"></i><a class="btn btn-link" href="@Url.Action("Create", "EventManager")">
+                                                         Create Event Manager</a><br />
+                            <p style="padding-left: 20px">
+                                Create a new event manager & later you can assign him an event.</p>
+                        </td>
+                        <td style="width: 50%">
+                            <i class="icon-bolt"></i><a class="btn btn-link" href="@Url.Action("Create", "CustomerLogo")">
+                                                         Change Logo</a><br />
+                            <p style="padding-left: 20px">
+                                Change your company's logo.</p>
+                        </td>
+                    </tr>
+                </table>
+                <hr />
+            </div>
+        </div>
+    </div>
+</div>

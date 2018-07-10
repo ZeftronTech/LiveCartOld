@@ -1,0 +1,125 @@
+﻿@model IEnumerable<LiveKart.Entities.BeaconDeployment>
+@{
+    ViewBag.Title = "Deployed";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div style="margin-right: 120px; margin-top: 20px; margin-bottom: 20px">
+    <a class="btn btn-large btn-primary" href="@Url.Action("Deploy")" style="float:right;">
+        Deploy Beacon</a></div>
+<br />
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span5" style="margin: 0;">
+                    <h1>
+                        Manage Beacon Deployment</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+<!-- End .title -->
+<div class="content top">
+    <div class="container">
+        @if (Model.Count() == 0)
+        { 
+            <h3>
+                No asset created.
+            </h3>
+        }
+        @if (Model.Count() > 0)
+        {          
+            <table class="responsive table table-striped table-bordered dTable">
+                <thead>
+                    <tr>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Beacon.BeaconID)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Asset.AssetCategory.CategoryName)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Asset.AssetName)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string delBtnId = "btnDelete" + item.BeaconDeploymentID;
+                        string actBtnId = "btnActivate" + item.BeaconDeploymentID;
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Beacon.BeaconName)
+                                <text> (</text>
+                                @Html.DisplayFor(modelItem => item.Beacon.BeaconID)
+                                <text>)</text>
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Asset.AssetCategory.CategoryName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Asset.AssetName)
+                            </td>
+                            <td class="ms">
+                                <div class="btn-group1">
+                                    @if (item.Active)
+                                    {
+                                        <a href="@Url.Action("Activate", "Beacon", new { id = item.BeaconDeploymentID })" id="@actBtnId" class="btn btn-small activate" rel="tooltip" data-placement="left" data-original-title=" In-Activate ">
+                                            <img src="@Url.Content("~/Content/img/Grid/Active.png")" width="10" height="10" alt="In-Activate" title="De-Activate" /></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Activate", "Beacon", new { id = item.BeaconDeploymentID })" id="@actBtnId" class="btn btn-small activate" rel="tooltip" data-placement="left" data-original-title=" Activate ">
+                                            <img src="@Url.Content("~/Content/img/Grid/inactive.png")" width="10" height="10" alt="Activate" title="Activate" /></a>
+                                    }
+                                    &nbsp; <a href="@Url.Action("EditDeployment", "Beacon", new { id = item.BeaconDeploymentID })" class="btn btn-small" rel="tooltip" data-placement="left" data-original-title=" modify ">
+                                        <img src="@Url.Content("~/Content/img/Grid/editg.gif")" width="10" height="10" alt="Edit" title="Edit" /></a>&nbsp;
+                                    <a href="@Url.Action("DeleteDeployment", "Beacon", new { id = item.BeaconDeploymentID })" id='@delBtnId' class="btn btn-inverse btn-small" rel="tooltip" data-placement="bottom" data-original-title=" Remove ">
+                                        <img src="@Url.Content("~/Content/img/Grid/deleteg.png")" width="10" height="10" alt="delete" title="Delete" /></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>
+@section JavaScript {
+    <script type="text/javascript">
+        $(document).on('click', '.activate', function () {
+            var pubButton = $(this);
+            $('body').showLoading();
+            var targetUrl = pubButton.attr('href');
+            $.ajax({ url: targetUrl, type: 'POST', success: function (result) {
+                if (result.Status == "Ok") {
+                    $('body').hideLoading();
+                    showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 300);
+                }
+                else {
+                    $('body').hideLoading(); showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                }
+            },
+                error: function (result) {
+                    $('body').hideLoading(); showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                }
+            }); return false;
+        });
+
+        $(window).load(function () {
+            $("#AssetId").prepend("<option value='0'>Select Asset</option>").val('0');
+          
+            });
+      
+</script>
+}

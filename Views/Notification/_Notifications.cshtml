@@ -1,0 +1,98 @@
+﻿@model IEnumerable<LiveKart.Entities.Notification>
+@if (Model.Count() == 0)
+{ 
+    <h3>
+        No campaign found.</h3>
+}
+else
+{
+    <input type="hidden" class="campaignCount" value="@Model.FirstOrDefault().NotificationCount" />
+    foreach (var notification in Model)
+    {
+        DateTime dtNow = Convert.ToDateTime(DateTime.UtcNow);
+        string publishText = notification.Active.GetValueOrDefault(false) ? "Published" : "Publish";
+        string endText = notification.Schedule == null ? " " : notification.Schedule.EndDate < dtNow ? "Ended On:" : "Ending On:";
+        string startText = notification.Schedule == null ? " " : notification.Schedule.StartDate <= dtNow ? "Started On:" : "Starting On:";
+        string publishId = "publish" + notification.NotificationID;
+        string editId = "edit" + notification.NotificationID;
+        string deleteId = "delete" + notification.NotificationID;
+    <div class="row-fluid campaignBox" id="campaignsContainer">
+        <div class="span12">
+            <div class="span2">
+                <a href="#">
+                    <img src="@Html.DisplayFor(modelItem => notification.NotificationImage)"></a>
+            </div>
+            <div class="span9 middleAlign">
+                <div class="row-fluid">
+                    <h1>@notification.NotificationTitle</h1>
+                    <h3>@notification.Description</h3>
+                </div>
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <label class="form-label span2">@startText</label>
+                            <div class="span2">
+                                @if (notification.Schedule != null)
+                                {
+                                    <text>@Convert.ToDateTime(notification.Schedule.StartDate).ToShortDateString()</text>
+                                }
+                            </div>
+                            <div class="span1">
+                            </div>
+                            <label class="form-label span2">@endText</label>
+                            <div class="span2">
+                            @if (notification.Schedule != null)
+                            {
+                                <text>@Convert.ToDateTime(notification.Schedule.EndDate).ToShortDateString()</text>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    @if (notification.Schedule == null || notification.Schedule.EndDate >= dtNow)
+                    {
+                        <a class="btn btn-large spacing edit" id="@editId" href="@Url.Action("Edit", "Notification", new { id = notification.NotificationID })">
+                            <i class="icon-edit"></i>Edit</a> 
+						<a class="btn btn-large spacing remove" id="@deleteId" href="@Url.Action("Delete", "Notification", new { id = notification.NotificationID })">
+                            <i class="icon-trash"></i>Delete</a> 
+                    }
+                    @if (notification.Schedule != null && notification.Schedule.EndDate >= dtNow)
+                    {
+                        <a data-toggle="modal" data-notificationid="@notification.NotificationID" href="#calendar" aria-labelledby="calendarLabel" class="btn btn-large spacing myschedule" id="myschedule@(publishId)">
+                                <i class="icon-globe"></i>My Schedule</a> 
+                        
+                        <a class="btn btn-large spacing publish" id="@publishId" href="@Url.Action("Publish", "Notification", new { id = notification.NotificationID })">
+                                <i class="icon-globe"></i>@publishText </a> 
+                    }
+                </div>
+            </div>
+            @if (notification.Schedule != null && notification.Schedule.EndDate >= dtNow)
+            {
+                <div class="span1 publish1" style="margin: -25px -20px 0 17px; background-color: #2E6AAF;
+                    color: #fff; padding:2px; border-radius: 0 5px 0 5px; text-align: center;" >
+                    @if (notification.Active.GetValueOrDefault(false))
+                    {
+                        <h6 class="cstatus" style="line-height: 26px;">
+                            Published</h6>
+                    }
+                    else
+                    {
+                        <h6 style="line-height: 26px;" class="cstatus">
+                            In Progress</h6>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="span1 publish1" style="margin: -25px -20px 0 17px; background-color: #2E6AAF;
+                    color: #fff; padding: 2px; text-align: center; border-radius: 0 5px 0 5px">
+                    <h6 class="cstatus" style="line-height: 26px;">
+                            Not Scheduled</h6>
+                </div>
+            }
+        </div>
+    </div>
+    }
+}
+

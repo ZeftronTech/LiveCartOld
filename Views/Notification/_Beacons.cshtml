@@ -1,0 +1,175 @@
+﻿@{
+    List<LiveKart.Entities.BeaconDeployment> beacons = ViewBag.Beacons;
+    List<LiveKart.Entities.NotificationBeaconMap> nBeacons = ViewBag.NBeacons;   
+ }
+<div id="deployedBeacons">
+    <table class="responsive table table-striped table-bordered dTable">
+        <thead>
+            <tr>
+                <th class="no_sort span2">
+                    Beacon
+                </th>
+                <th class="no_sort span2">
+                    Asset Category
+                </th>
+                <th class="no_sort span2">
+                    Asset
+                </th>
+                <th class="no_sort span2">
+                </th>
+                <th class="span4">Schedule
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var beacon in beacons)
+            { 
+                <tr>
+                    <td>
+                        @beacon.BeaconName
+                        <text> (</text>
+                        @beacon.BeaconId
+                        <text>)</text>
+                    </td>
+                    <td>
+                        @beacon.CategoryName
+                    </td>
+                    <td>
+                        @beacon.AssetName
+                    </td>
+                    <td>
+                        @if (nBeacons.Where(b => b.BeaconId == beacon.BeaconId).Count() > 0)
+                        {
+                            <div class="toggle slide">
+                                <input type="checkbox" class="chkbeacon" id="@beacon.BeaconId" value="@beacon.BeaconId" name="TargetBeacon" checked/>
+                                <label for="@beacon.BeaconId">
+                                    <div class="card slide">
+                                    </div>
+                                </label>
+                            </div>
+                        }
+                        else
+                        { 
+                            <div class="toggle slide">
+                                <input type="checkbox" class="chkbeacon" id="@beacon.BeaconId" value="@beacon.BeaconId" name="TargetBeacon"/>
+                                <label for="@beacon.BeaconId">
+                                    <div class="card slide">
+                                    </div>
+                                </label>
+                            </div>
+                        }
+                    </td>
+                    <td class="beaconschedule" id="td@(beacon.BeaconId)">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="form-row row-fluid">
+    <div class="span12">
+        <input style="float: right; margin: 2% 2% 0 31.3%;" type="submit" value="Target"
+            id="submitschedule" class="btn btn-large btn-primary" />
+    </div>
+</div>
+
+<script type="text/javascript">
+    //----------------------------------------------------Beacon Target--------------------------------------------------------
+    $(document).ready(function () {
+        $(".beaconschedule").hide();
+        function GetBeaconSchedule(schedules, selector, isScheduled) {
+            var divtoappend = $('#td' + $(selector).val());
+            $.each(schedules, function (index, schedule) {
+                var container = $('<div id="div"' + $(selector).val() + ' />');
+                var fDate = new Date(parseInt(schedule.FromDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                var tDate = new Date(parseInt(schedule.ToDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                var fromDate = fDate.getMonth() + 1 + "/" + fDate.getDate() + "/" + fDate.getFullYear();
+                var toDate = tDate.getMonth() + 1 + "/" + tDate.getDate() + "/" + tDate.getFullYear();
+                var days1 = $('<div class="span12" />');
+                var days2 = $('<div class="span12" />');
+                var dcount = 0;
+                $(schedule.Days.split(',')).each(function (index, day) {
+                    dcount = dcount + 1;
+                    if (index <= 3) {
+                        days1.append('<div class="span3"><input type="checkbox" id=' + index + 'day' + $(selector).val() + ' name="day' + fromDate + $(selector).val() + '" value="' + day + '"' + isScheduled + ' /><label for="' + index + 'day' + $(selector).val() + '" style="font-size:12px">' + day + '</label></div>');
+                    }
+                    else {
+                        days2.append('<div class="span3"><input type="checkbox" id=' + index + 'day' + $(selector).val() + ' name="day' + fromDate + $(selector).val() + '" value="' + day + '"' + isScheduled + ' /><label for="' + index + 'day' + $(selector).val() + '"  style="font-size:12px">' + day + '</label></div>');
+                    }
+                });
+                container.append('<div class="form-row row-fluid"><div class="span6"><b>From: </b><span>' + fromDate + '</span><input type="hidden" id="dtfrom' + isScheduled + index + $(selector).val() + '" name="dtfrom' + $(selector).val() + '" value="' + fromDate + '" /></div><div class="span6"><b>To: </b><span>' + toDate + '</span><input type="hidden" class="dtto" id="dtto' + isScheduled + index + $(selector).val() + '" name="dtto' + $(selector).val() + '" value="' + toDate + '" /></div></div>');
+                container.append($('<div class="form-row row-fluid" />').append(days1));
+                if (dcount > 4) {
+                    container.append($('<div class="form-row row-fluid" />').append(days2));
+                }
+                divtoappend.append(container);
+            });
+        }
+        $('.chkbeacon').change(function () {
+            var selector = this;
+            if ($(this).is(':checked')) {
+                $.getJSON('/Notification/GetBeaconSchedule?notificationId=' + $('#NotificationId').val() + '&beaconId=' + $(selector).val() + '&fromDate=' + $('#Schedule_StartDate').val() + '&toDate=' + $('#Schedule_EndDate').val(), function (schedules) {
+                    GetBeaconSchedule(schedules.Scheduled, selector, "checked");
+                    GetBeaconSchedule(schedules.Unscheduled, selector, "");
+                });
+            }
+            else {
+                $('#td' + $(selector).val()).html('');
+            }
+            $('#td' + $(selector).val()).show();
+        });
+        $('.chkbeacon').trigger("change");
+        $('#frmTargetBeacon').submit(function () {
+            if ($(this).validate().form()) {
+                $('#content').showLoading();
+                var bschedule = new Array();
+                var beacons = new Array();
+                //Fill all the reference images.
+                $("#deployedBeacons").find("input[name='TargetBeacon']:checked").each(function (index, beacon) {
+                    var beaconId = $(beacon).val();
+                    beacons.push({
+                        'NotificationId': $('#NotificationId').val(),
+                        'BeaconId': beaconId
+                    });
+                    $('#td' + beaconId).find("input[name='dtfrom" + beaconId + "']").each(function (i, dtfrom) {
+                        var days = '';
+                        $('#td' + beaconId).find("input[name='day" + $(dtfrom).val() + beaconId + "']:checked").each(function (j, day) {
+                            days = days + $(day).val() + ',';
+                        });
+                        days = days.substring(0, days.length - 1);
+                        bschedule.push({
+                            'NotificationId': $('#NotificationId').val(),
+                            'BeaconId': beaconId,
+                            'StrFromDate': $(dtfrom).val(),
+                            'StrToDate': $(dtfrom).parent().parent().find(".dtto").val(),
+                            'Days': days
+                        });
+                    });
+                });
+                var data = $(this).serializeArray(); // convert form to array
+                data.push({ name: 'TargetBeacons', value: JSON.stringify(beacons) });
+                data.push({ name: 'BeaconSchedule', value: JSON.stringify(bschedule) });
+                $.ajax({
+                    url: this.action + '/' + $('#NotificationId').val(),
+                    type: this.method,
+                    data: data,
+                    complete: function () {
+                        $('#content').hideLoading();
+                    },
+                    success: function (result) {
+                        if (result.Status == "Ok") {
+                            showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                        }
+                        else {
+                            showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                        }
+                    },
+                    error: function (result) {
+                        showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                    }
+                });
+            }
+            return false;
+        });
+    });
+    </script>

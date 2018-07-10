@@ -1,0 +1,182 @@
+﻿@model LiveKart.Entities.Asset
+@{
+	ViewBag.Title = "New Asset";
+	Layout = "~/Views/Shared/_AdminMaster.cshtml";
+
+	List<LiveKart.Entities.AssetCategory> categories = ViewBag.Categories;
+}
+<div id="masthead">
+	<div class="container">
+		<div class="masthead-pad">
+			<div class="masthead-text">
+				<div class="span4" style="margin: 0;">
+					<h1>
+						New Asset
+					</h1>
+				</div>
+			</div>
+			<!-- /.masthead-text -->
+		</div>
+	</div>
+</div>
+<!-- /.container -->
+<div id="content">
+	<div class="container">
+		<div class="row-fluid">
+			@using (Html.BeginForm("Edit", "Asset", FormMethod.Post, new { id = "frmAsset", @class = "form-horizontal" }))
+			{
+
+				@Html.HiddenFor(model => model.AssetID)
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.AssetName, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.AssetName, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.Description, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextAreaFor(model => model.Description, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.AssetCategoryID, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.DropDownListFor(model => model.AssetCategoryID, new SelectList(categories, "AssetCategoryID", "CategoryName", Model.AssetCategoryID), new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.Location, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.Location, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.Address, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.Address, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.State, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.State, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.City, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.City, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.ZipCode, new { @class = "form-label span4" })
+						<div class="row-fluid span4">
+							@Html.TextBoxFor(model => model.ZipCode, new { @class = "row-fluid" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						@Html.LabelFor(model => model.Active, new { @class = "form-label span4" })
+						<div class="row-fluid span1">
+							<div class="toggle slide">
+								<input type="checkbox" name="Active" id="Active" data-val="true" value="true" @(Model.Active.GetValueOrDefault(false) ? "checked" : "") />
+								<span class="chk"></span><span class="labels"></span><span class="bg"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row-fluid form-actions">
+					<div class="span12">
+						<input type="submit" value="Update" class="btn btn-large btn-primary" />
+						@Html.ActionLink("Cancel", "Index", 0, new { @class = "btn btn-large btn-secondary" })
+					</div>
+				</div>
+
+			}
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="@Url.Content("~/Content/js/plugins/jquery.uniform.min.js")"> </script>
+@section JavaScript {
+	<script type="text/javascript">
+		$(window).load(function () {
+			$("#AssetCategoryID").prepend("<option value='0'>Select Asset Category</option>");
+			$("#frmAsset").validate({
+				rules: {
+					AssetName: { required: true, maxlength: 50 },
+					AssetCategoryID: { required: true, min: 1 },
+					Location: { required: true, maxlength: 50 },
+					Address: { required: true, maxlength: 100 },
+					State: { required: true, maxlength: 50 },
+					City: { required: true, maxlength: 50 },
+					ZipCode: { required: true, maxlength: 10, digits: true },
+					Description: { maxlength: 250 }
+				},
+				messages: {
+					CategoryName: { required: "Required!", maxlength: "Seems too long." },
+					AssetCategoryID: "Required!",
+					Location: { required: "Required!", maxlength: "Seems too long." },
+					Address: { required: "Required!", maxlength: "Seems too long." },
+					State: { required: "Required!", maxlength: "Seems too long." },
+					City: { required: "Required!", maxlength: "Seems too long." },
+					ZipCode: { required: "Required!", maxlength: "Seems too long.", digits: "Invalid value!" },
+					Description: { maxlength: "Seems too long." }
+				}
+			});
+
+			$('#frmAsset').submit(function () {
+				if ($(this).validate().form()) {
+					$('body').showLoading();
+					$.ajax({
+						url: this.action,
+						type: this.method,
+						data: $(this).serialize(),
+						success: function (result) {
+							if (result.Status == "Ok") {
+								showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+								setTimeout(function () {
+									window.location = result.ReturnUrl;
+								}, 300);
+							}
+							else {
+								$('body').hideLoading();
+								showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+							}
+						},
+						error: function (result) {
+							$('body').hideLoading();
+							showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+						}
+					});
+				}
+				return false;
+			});
+		});
+	</script>
+}

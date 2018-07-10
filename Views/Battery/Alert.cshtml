@@ -1,0 +1,70 @@
+﻿@model IEnumerable<LiveKart.Entities.Alert>
+@{
+    ViewBag.Title = "Alert";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+<br />
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Beacon Battery Status !</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+<!-- End .title -->
+<div class="content top">
+    <div class="container">
+        
+            <table class="responsive table table-striped table-bordered dTable">
+                <thead>
+                    <tr>
+                         <th class="no_sort to_hide_phone">
+                         @Html.DisplayNameFor(model=>model.BeaconID)
+                         </th>
+                         <th class="no_sort to_hide_phone">
+                         @Html.DisplayNameFor(model=>model.Messages)
+                         </th>
+                         <th class="no_sort to_hide_phone">
+                         @Html.DisplayNameFor(model => model.BatteryLevel)
+                         </th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Where(x=>x.BeaconID!=null))
+                {
+                     <tr>
+                         <td>
+                            @Html.DisplayFor(modelitem=>item.BeaconID)
+                         </td>
+                         <td>
+                            @Html.DisplayFor(modelitem=>item.Messages)
+                         </td> 
+                         <td>
+                        @* @Html.DisplayFor(modelitem=>item.BatteryLevel)*@
+                         @if (item.BatteryLevel == "0" || item.BatteryLevel==null)
+                        { 
+                            <img src="../../Content/img/BatteryEmpty.png" title="Empty" />
+                        }
+                        else if (item.BatteryLevel == "1")
+                        { 
+                            <img src="../../Content/img/Battery25.png" title="Low" />
+                        }
+                         </td>      
+                 </tr>
+                    }
+                </tbody>
+            </table>
+        
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>
+

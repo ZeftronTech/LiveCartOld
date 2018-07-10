@@ -1,0 +1,96 @@
+﻿@model IEnumerable<LiveKart.Entities.Asset>
+@{
+	ViewBag.Title = "Assets";
+	Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div style="margin-right: 120px; margin-top: 20px; margin-bottom: 20px">
+	<a class="btn btn-large btn-primary" href="@Url.Action("Create")" style="float:right;">
+		New Asset
+	</a>
+</div>
+<br />
+<div id="masthead">
+	<div class="container">
+		<div class="masthead-pad">
+			<div class="masthead-text">
+				<div class="span4" style="margin: 0;">
+					<h1>
+						Manage Asset
+					</h1>
+				</div>
+			</div>
+			<!-- /.masthead-text -->
+		</div>
+	</div>
+	<!-- /.container -->
+</div>
+<!-- End .title -->
+<div class="content top">
+	<div class="container">
+		@if (Model.Count() == 0)
+		{
+			<h3>
+				No asset created.
+			</h3>
+		}
+		@if (Model.Count() > 0)
+		{
+			<table class="responsive table table-striped table-bordered dTable">
+				<thead>
+					<tr>
+
+						<th class="no_sort to_hide_phone">
+							@Html.DisplayNameFor(model => model.AssetName)
+						</th>
+						<th class="no_sort to_hide_phone">
+							@Html.DisplayNameFor(model => model.Description)
+						</th>
+						<th class="no_sort to_hide_phone">
+							@Html.DisplayNameFor(model => model.AssetCategory.CategoryName)
+						</th>
+						<th class="no_sort to_hide_phone">
+							@Html.DisplayNameFor(model => model.Active)
+						</th>
+						<th class="no_sort to_hide_phone">
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (var item in Model)
+					{
+						string delBtnId = "btnDelete" + item.AssetID;
+						<tr>
+
+							<td>
+								@Html.DisplayFor(modelItem => item.AssetName)
+							</td>
+							<td>
+								@Html.DisplayFor(modelItem => item.Description)
+							</td>
+							<td>
+								@Html.DisplayFor(modelItem => item.AssetCategory.CategoryName)
+							</td>
+							<td>
+								<div class="toggle slide">
+									<input type="checkbox" name="Active" id="Active" @(item.Active.GetValueOrDefault(false) ? "checked" : "") disabled />
+									<span class="chk"></span><span class="labels"></span><span class="bg"></span>
+								</div>
+							</td>
+							<td class="ms">
+								<div class="btn-group1">
+									<a href="@Url.Action("Edit", "Asset", new { id = item.AssetID })" class="btn btn-small" rel="tooltip" data-placement="left" data-original-title=" modify ">
+										<img src="@Url.Content("~/Content/img/Grid/editg.gif")" width="10" height="10" alt="Edit" title="Edit" />
+									</a>&nbsp;
+									<a href="@Url.Action("Delete", "Asset", new { id = item.AssetID })" id='@delBtnId' class="btn btn-inverse btn-small" rel="tooltip" data-placement="bottom" data-original-title=" Remove ">
+										<img src="@Url.Content("~/Content/img/Grid/deleteg.png")" width="10" height="10" alt="Delete" title="Delete" />
+									</a>
+								</div>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	</div>
+</div>
+<script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>

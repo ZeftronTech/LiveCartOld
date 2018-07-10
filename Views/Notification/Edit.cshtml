@@ -1,0 +1,80 @@
+﻿@model LiveKart.Entities.Notification
+@{
+    ViewBag.Title = "Edit notification";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Edit Campaign</h1>
+                </div>
+                <a class="btn btn-large btn-primary" href="@Url.Action("Index")" style="float:right;">
+                    <i class="icon-tint"></i>Back to Campaigns</a>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+<div id="content">
+    <div class="container">
+        <div style="margin-bottom: 20px;">
+            <ul class="nav nav-tabs pattern">
+                <li class="active" style="width:25%"><a data-toggle="tab" href="#overview">Overview <span>
+                    Provide Campaign information. </span></a></li>
+				<li style="width:25%"><a data-toggle="tab" href="#notifications">Notifications <span>
+					Provide notifications details. </span></a></li>
+                <li class="" style="width:25%"><a data-toggle="tab" href="#proximity">Set Proximity <span>
+                    <br /> </span></a></li>
+                <li style="width:25%"><a data-toggle="tab" href="#schedule">Schedule Campaign <span>
+                    Specify the scheduling options. </span></a></li>
+            </ul>
+            <div class="tab-content">
+
+                <div id="overview" class="tab-pane " style="padding: 30px;">
+                    @using (Html.BeginForm("Overview", "Notification", FormMethod.Post, new { id = "frmOverview", @class = "form-horizontal" }))
+                    {
+                        ViewBag.NotificationId = Model.NotificationID;
+                        @Html.Partial("_Overview", Model)
+                    }
+                </div>
+
+				 @*/////////////////////////Notifications///////////////////////////////*@
+                <div id="notifications" class="tab-pane" style="padding: 30px;">
+                    @using (Html.BeginForm("NotificationMessage", "NotificationMessage", FormMethod.Post, new { id = "frmNotificationTab", @class = "form-horizontal", enctype = "multipart/form-data" }))
+                    {
+                        @Html.Partial("_NotificationsTab", Model)
+                    }
+                </div>
+
+                @*///////////////////////// Proximity ////////////////////////////////////////*@
+                <div id="proximity" class="tab-pane " style="padding: 30px;">
+                    @using (Html.BeginForm("Notification", "Notification", FormMethod.Post, new { id = "frmNotification", @class = "form-horizontal" }))
+                    {
+                        @Html.Partial("_Proximity", Model)
+                    }
+                </div>
+                
+                @*/////////////////////////////Schedule/////////////////////////////////////*@
+                <div id="schedule" class="tab-pane " style="padding: 30px;">
+                    @using (Html.BeginForm("Schedule", "Notification", FormMethod.Post, new { id = "frmSchedule", @class = "form-horizontal" }))
+                    {
+                        @Html.Partial("_Schedule", Model.Schedule, new ViewDataDictionary
+                   {
+                       TemplateInfo = new System.Web.Mvc.TemplateInfo
+                       {
+                           HtmlFieldPrefix = "Schedule"
+                       }
+                   })
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section JavaScript {
+    <script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>
+}

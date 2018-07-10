@@ -1,0 +1,433 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+   
+}
+
+
+<div class="container dash">
+  <div class="span12">
+    <div class="row-fluid top-header">
+      <div class="span5">
+        <h4>@(Convert.ToDateTime(ViewBag.fromDate).ToString("dd MMM")) - @(Convert.ToDateTime(ViewBag.endDate).ToString("dd MMM"))</h4>
+      </div>
+      <div class="span7 text-right"><input type="hidden" name="hiddendate" id="dp"> <span><img src="../../Content/img/dashboard/calender.png" id="trigger" width="31" height="31"></span>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn2013"  type="button">2013</button>
+          <button class="btn btn-primary"  type="button">Apr</button>
+          <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Tellmefromdate", "Dashboard", new { id=0 })'" type="button">Today</button>
+          <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Tellmefromdate", "Dashboard", new { id = 7 })'" type="button">7 days</button>
+          <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Tellmefromdate", "Dashboard", new { id = 30 })'" type="button">30 days</button>
+          <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Tellmefromdate", "Dashboard", new { id = 60 })'" type="button">60 days</button>
+          <button class="btn btn-primary" onclick="window.location.href='@Url.Action("Tellmefromdate", "Dashboard", new { id = 90 })'" type="button">90 days</button>
+        </div>
+      </div>
+    </div>
+    <div class="row-fluid category">
+      <div class="span3 no-padding ">
+        <div class="box bdr-left clearfix">
+          <div class="icon"><img src="../../Content/img/dashboard/mobile-icon-hover.jpg" width="28" height="48"></div>
+          <div class="increase">32.9% <img src="../../Content/img/dashboard/up-green.png" width="14" height="12"></div>
+          <h2>@ViewBag.Session</h2>
+          <div class="graph2"><img src="../../Content/img/dashboard/bar-img.png" width="120" height="31"></div>
+        </div>
+        <a href="#" class="box-btn bdr-lft active">total session</a> </div>
+      <div class="span3 no-padding ">
+        <div class="box clearfix">
+          <div class="icon"><img src="../../Content/img/dashboard/foot-icon.jpg" width="41" height="42"></div>
+          <div class="increase">32.9% <img src="../../Content/img/dashboard/up-green.png" width="14" height="12"></div>
+          <h2>@ViewBag.UniqueUser</h2>
+          <div class="graph2"><img src="../../Content/img/dashboard/bar-img.png" width="120" height="31"></div>
+        </div>
+        <a href="#" class="box-btn">total footfall</a> </div>
+      <div class="span3 no-padding ">
+        <div class="box clearfix">
+          <div class="icon"><img src="../../Content/img/dashboard/notification-icon.jpg" width="41" height="36"></div>
+          <div class="increase">32.9% <img src="../../Content/img/dashboard/up-green.png" width="14" height="12"></div>
+          <h2>@ViewBag.totalNotification</h2>
+          <div class="graph2"><img src="../../Content/img/dashboard/bar-img.png" width="120" height="31"></div>
+        </div>
+        <a href="#" class="box-btn">total notification</a> </div>
+      <div class="span3 no-padding ">
+        <div class="box clearfix">
+          <div class="icon"><img src="../../Content/img/dashboard/trasition-icon.jpg" width="39" height="40"></div>
+          <div class="increase">32.9% <img src="../../Content/img/dashboard/down-red.png" width="14" height="12"></div>
+          <h2>@ViewBag.totalConversion</h2>
+          <div class="graph2"><img src="../../Content/img/dashboard/bar-img-red.png" width="121" height="31"></div>
+        </div>
+        <a href="#" class="box-btn">total Conversions</a> </div>
+      <div class="span3 no-padding ">
+        <div class="box clearfix">
+          <div class="img"><img src="@ViewBag.NotificationImg" width="90" height="150"></div>
+          <div class="increase">32.9% <img src="../../Content/img/dashboard/up-green.png" width="14" height="12"></div>
+        </div>
+        <a href="#" class="box-btn">Popular Product</a> </div>
+    </div>
+   <div class="row-fluid">
+      <div class="line-chart">
+        <div id="placeholder" class="demo-placeholder" style="height:380px; width:100%;"></div>
+      </div>
+    </div>
+    <div class="row-fluid new-charts">
+      <div class="span4">
+        <div class="charts">
+          <div id="sensing" style="width: 100%; height: 300px;"></div>
+        </div>
+      </div>
+      <div class="span4">
+        <div class="charts">
+          <div id="offers" class="horizontal-bars-chart" style="width:100%; height:300px;"></div>
+         </div>
+      </div>
+      <div class="span4">
+        <div class="charts">
+          <div id="consumer" style="width:100%; height:300px;"></div>
+        </div>
+      </div>
+    <div class="new-user">
+      <div class="span3">
+        <h5>TOP PLATFORM</h5>
+        <div class="img2"><img src="../../Content/img/dashboard/img3.jpg" width="159" height="9"></div>
+        <h2>IOS</h2>
+      </div>
+      <div class="span3">
+        <h5>TOP OFFER</h5>
+        <div class="img2"><img src="../../Content/img/dashboard/img4.jpg" width="153" height="9"></div>
+        <div class="img3"><h2>@ViewBag.topOffer</h2></div>
+      </div>
+      <div class="span3">
+        <h5>NEW USER</h5>
+        <div class="img2"><img src="../../Content/img/dashboard/img3.jpg" width="159" height="9"></div>
+        <h2>@ViewBag.NewUser</h2>
+      </div>
+      <div class="span3">
+        <h5>TOP USER</h5>
+        <div class="img2"><img src="../../Content/img/dashboard/img3.jpg" width="159" height="9"></div>
+        <h2>@(Convert.ToDateTime(ViewBag.MaxFootfallDate).ToString("dd MMM"))</h2>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+        <script src="https://code.jquery.com/jquery.js"></script>
+
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+      
+      <script src="../../Content/js/dashboard/Horizon/bootstrap.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.cookie.js" type="text/javascript"></script>
+
+
+      <script src="../../Content/js/dashboard/Horizon/jquery.qtip.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/jquery.flot.js" type="text/javascript"></script>
+        
+        <script src="../../Content/js/dashboard/Horizon/jquery.flot.tooltip_0.4.4.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.flot.orderBars.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.sparkline.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.knob.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/fullcalendar.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/prettify.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.watermark.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.maskedinput-1.3.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.ibutton.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.uniform.min.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/ui.stepper.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/Horizon/jquery.timeentry.min.js" type="text/javascript"></script>.
+<script src="../../Content/js/dashboard/Horizon/select2.min.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.dualListBox-1.3.min.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.tinymce.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.validate.min.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.progressbar.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.prettyPhoto.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.smartWizard-2.0.min.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/elfinder.min.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/jquery.plupload.queue.js" type="text/javascript"></script>
+<script src="../../Content/js/dashboard/Horizon/statistic.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
+        <script src="../../Content/js/dashboard/jquery.flot.time.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/jquery.flot.stack.js" type="text/javascript"></script>
+        
+
+        <script src="../../Content/js/dashboard/custom-chart.js" type="text/javascript"></script>
+        <script src="../../Content/js/dashboard/bootstrap.min.js" type="text/javascript"></script>
+
+
+        <script type="text/javascript"> 
+        
+      
+//////      for LineChart
+//      var lineConversion=@Html.Raw(Json.Encode(ViewBag.LineFarNotification));            //// Not Use for Some Time
+        var lineNotification=@Html.Raw(Json.Encode(ViewBag.LineCloseNotification));
+        var lineCoupanEngaged=@Html.Raw(Json.Encode(ViewBag.LineNearNotification));
+
+        
+//////        for Chart1
+        var IsbClose=@Html.Raw(Json.Encode(ViewBag.LineCloseNotificationS));
+        var IsbNear=@Html.Raw(Json.Encode(ViewBag.LineNearNotificationS));
+//        var IsbFar=@Html.Raw(Json.Encode(ViewBag.LineFarNotificationS));              // Not use for Some Time
+
+//////        for Chart 2
+        var lineOfferViewed = @Html.Raw(Json.Encode(ViewBag.LineOfferViewed));
+        var lineOfferSaved = @Html.Raw(Json.Encode(ViewBag.LineOfferSaved));
+        var lineOfferRated = @Html.Raw(Json.Encode(ViewBag.LineOfferRated));
+
+
+//      For Chart 3 tick
+        var lineticknewuser = @Html.Raw(Json.Encode(ViewBag.UniqueUser));
+//      For chart3
+        var lineUniqueUser=@Html.Raw(Json.Encode(ViewBag.LineUniqueUser));
+        var lineNewUser=@Html.Raw(Json.Encode(ViewBag.LineNewUser));
+
+       
+//      For Line Chart
+        var options = {
+            xaxis: { mode: "time", minTickSize: [1, "day"], timeformat: "%b %d" },
+            series: {
+                lines: { show: true},
+                points: { show: true, fill: true }
+            },
+            grid: { hoverable: true, clickable: true, autoHighlight: false, borderWidth: 0, backgroundColor: { colors: ["#fff", "#fbfbfb"]} },
+            yaxis: { tickDecimals: 0 }
+        };
+        
+//        For Line Chart
+
+        function DrawLineGraphs(visits, v2) {
+        var visitPlaceholder = $("#placeholder");
+        visitPlot = $.plot(visitPlaceholder, [visits,v2], options);
+        BindTooltipToPoints(visitPlaceholder);
+            }
+
+
+//      For Chart 1
+
+            var stack = 0,
+			bars = true,
+			lines = false,
+			steps = false;
+
+//        For chart 1
+            var stackbaroption = {
+            xaxis: { mode: "time", minTickSize: [1, "day"], timeformat: "%d" },
+            grid: { hoverable: true, clickable: true},
+            series: {
+					stack: false,
+					lines: {
+						show: lines,
+						fill: true,
+						steps: steps
+					},
+					bars: {
+						show: true,
+                        align: "center",
+                        fillColor: { colors: [{ opacity: 1 }, { opacity: 1}] },
+                         barWidth: 25184000
+					}
+				}
+            }
+
+        // for chart 1
+////        function DrawStackBarGraph(NP1,NP2,NP3){ When Used 3 parameters
+        function DrawStackBarGraph(NP1,NP2){
+        var Notificationplaceholder = $("#sensing");
+        NotifivationPlot = $.plot(Notificationplaceholder,[NP1,NP2],stackbaroption);
+        BindTooltipToPoints(Notificationplaceholder);
+        }
+
+
+       //for chart3
+             var baroptions = {
+                 bars: { show: true,  barWidth: 0.5,opacity:1,fillColor: { colors: [{ opacity: 1 }, { opacity: 1}] },align: "center", horizontal: true },
+                 yaxis: {"tickSize":1, tickFormatter: function (v) {if(v==1){ return "Registered User";}else if(v==2){return "Annonymous User";}else {return "";}}},
+                 grid: { hoverable: true},
+                 xaxis:{"min":"0","max":lineticknewuser*2,"tickSize":lineticknewuser/4,"tickLength": 0, "ticks": 0.1}
+             };
+
+        // for chart3
+        function DrawBarGraphs(us1,us2){
+        var userPlaceholder = $("#consumer");
+        userplot = $.plot(userPlaceholder,[us1,us2],baroptions);
+        BindTooltipToPoints1(userPlaceholder);
+        }
+
+       
+             function BindTooltipToPoints1(placeholder){
+            $(placeholder).bind("plothover", function (event, pos, item) {
+            $("#x").text(pos.x.toFixed(2));
+            $("#y").text(pos.y.toFixed(2));
+            if (item) {
+                var x = item.datapoint[0],
+                    y = item.datapoint[1].toFixed(0);
+                showTooltip(item.pageX, item.pageY,
+                    item.series.label + " : (" + x + ")");
+            }
+            else {
+                $("#tooltip").remove();
+               }
+             });
+          }
+        
+         function BindTooltipToPoints(placeholder){
+            $(placeholder).bind("plothover", function (event, pos, item) {
+            $("#x").text(pos.x.toFixed(2));
+            $("#y").text(pos.y.toFixed(2));
+            if (item) {
+                var x = item.datapoint[0],
+                    y = item.datapoint[1].toFixed(0);
+                showTooltip(item.pageX, item.pageY,
+                    item.series.label + " : (" + GetDateFromMilliseconds(x) + ", " + y + ")");
+            }
+            else {
+                $("#tooltip").remove();
+                }
+          });
+     }
+
+        function GetDateFromMilliseconds(milliseconds) {
+        var d = new Date(milliseconds);
+        var curr_date = d.getDate();
+        var curr_month = d.getMonth() + 1; //Months are zero based
+        var curr_year = d.getFullYear();
+        var dt = curr_month;
+        return curr_month + "/" + curr_date + "/" + curr_year;
+    }
+
+        function showTooltip(x, y, contents) {
+        $('<div id="tooltip">' + contents + '</div>').css({
+            position: 'absolute',
+            display: 'none',
+            top: y + 5,
+            left: x + 5,
+            border: '1px solid #ccc',
+            padding: '2px 6px',
+            'background-color': '#fff',
+            opacity: 0.80
+        }).appendTo("body").fadeIn(200);
+    }
+
+
+            $(window).load(function () {
+            DrawLineGraphs(lineNotification,lineCoupanEngaged);
+            DrawBarGraphs(lineNewUser,lineUniqueUser);
+            DrawStackBarGraph(IsbClose,IsbNear);
+             });
+
+
+//             // for chart2 
+        
+        randNum = function(){
+	    return Math.floor(Math.random()*101);
+        }
+
+        var chartColours = ["#58ACFA", "#FF8000", "#A4A4A4", "#F5DA81", "#06b84d", '#5a8022', '#2c7282'];
+
+
+//      document ready function
+        $(document).ready(function() {
+
+	    var divElement = $('div'); //log all div elements
+
+	
+	//------------- Graphs for chart.html page -------------//
+
+	//Horizontal bars chart
+        if (divElement.hasClass('horizontal-bars-chart')) {
+	    $(function () {
+		    //some data
+		    //Display horizontal graph
+        var d1_h = [];
+        for (var i = 0; i <= 5; i += 1)
+            d1_h.push([4,i ]);
+
+        var d2_h = [];
+        for (var i = 0; i <= 5; i += 1)
+            d2_h.push([4,i ]);
+
+        var d3_h = [];
+        for (var i = 0; i <= 5; i += 1)
+            d3_h.push([ 6,i]);
+                
+        var ds_h = new Array();
+        ds_h.push({
+            data: lineOfferViewed.data,
+            label: lineOfferViewed.label,
+		    bars: {
+                horizontal:true, 
+                show: true, 
+                barWidth: 25184000, 
+                order: 1
+            }
+        });
+	    ds_h.push({
+	        data:lineOfferSaved.data,
+            label:  lineOfferSaved.label,
+	        bars: {
+	            horizontal:true, 
+	            show: true, 
+	            barWidth: 25184000, 
+	            order: 2
+	        }
+	    });
+	    ds_h.push({
+	        data:lineOfferRated.data,
+            label:  lineOfferRated.label,
+	        bars: {
+	            horizontal:true, 
+	            show: true, 
+	            barWidth: 25184000, 
+	            order: 3
+	        }
+	    });
+
+		        var options = {
+				grid: {
+					show: true,
+				    aboveData: false,
+				    color: "#3f3f3f" ,
+				    labelMargin: 5,
+				    axisMargin: 0, 
+				    borderWidth: 0,
+				    borderColor:null,
+				    minBorderMargin: 5 ,
+				    clickable: true, 
+				    hoverable: true,
+				    autoHighlight: false,
+				    mouseActiveRadius: 20
+				},
+                yaxis: { mode: "time", minTickSize: [1, "day"], timeformat: "%d" },
+		        series: {
+		        	grow: {active:false},
+			        bars: {
+			        	show:true,
+						horizontal: true,
+						barWidth:45184000,
+						fill:1
+					}
+		        },
+		        legend: { position: "ne" },
+		        colors: chartColours,
+		        tooltip: true, //activate tooltip
+				tooltipOpts: {
+					content: "%x.0",
+					shifts: {
+						x: -30,
+						y: -50
+					}
+				}
+		    };
+
+		  $.plot($(".horizontal-bars-chart"), ds_h, options);
+	        });
+	      }//end if
+       });
+
+
+        $(function() {
+            $('#dp').datepicker();
+            $('#trigger').click(function() {
+                $('#dp').datepicker('show');
+            });
+        });
+
+  </script>
+@*<script src="../../Content/js/dashboard/Horizon/statistic.js" type="text/javascript"></script>*@
+

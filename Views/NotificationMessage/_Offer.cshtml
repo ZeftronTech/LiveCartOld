@@ -1,0 +1,85 @@
+﻿@using LiveKart.Entities
+@model NotificationMessage
+
+@{
+    NotificationMessage notificationMessage = Model;
+    string thumbSrc = notificationMessage.MessageThumbImage ?? "/Content/notificationimages/img-placeholder.png";
+}
+
+@Html.HiddenFor(m => notificationMessage.OfferId)
+@Html.HiddenFor(m => notificationMessage.OfferMessage.OfferMessageId)
+<h2>Offer Content</h2>
+<br />
+<div class="span12" style="width: 100%; margin-left: 0px;">
+    <div class="row-fluid">
+        <label class="form-label span3">Notification Header</label>
+        <div class="span9">
+            @Html.TextBoxFor(m => notificationMessage.OfferMessage.MessageHeader, new { @class = "span9" })
+            @Html.ValidationMessageFor(m => notificationMessage.OfferMessage.MessageHeader)
+            <p>Visible to the mobile app user.</p>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <label class="form-label span3">Notification Short Description</label>
+        <div class="span9">
+            @Html.TextAreaFor(m => notificationMessage.OfferMessage.MessageShortDescription, new { @class = "span9", maxlength=100 })
+            <p>Visible to mobile app user. Please do not enter more than 100 characters.</p>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <label class="form-label span3">Notification Image(thumbnail image)</label>
+        <div class="span9">
+            @Html.TextBoxFor(m => notificationMessage.MessageThumbImage, new { style = "display: none"})
+            <input type="file" id="notificationMessage_MessageThumbImageFile" style="display: none;"/>
+            <div class="span9">
+                <div class="span6 offset3">
+                    <img id="notificationMessage_MessageThumbImageImg" class="NotificationImage thumb" src="@thumbSrc" />
+                    <i class="icon-large icon-pencil editImageIcon"></i>
+                    <i class="icon-large icon-trash deleteImageIcon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <label class="form-label span3">Offer Image(full screen image)</label>
+        <div class="span9">
+            @Html.TextBoxFor(m => notificationMessage.OfferMessage.MessageImage, new {style = "display: none" })
+            <input type="file" id="notificationMessage_OfferMessage_MessageImageFile" style="display: none;"/>
+            <div class="span9">
+                <div class="span6 offset3">
+                    @{
+                        string stmImgSrc = notificationMessage.OfferMessage.MessageImage ?? "/Content/notificationimages/img-placeholder.png";
+                    }
+                    <img id="notificationMessage_OfferMessage_MessageImageImg" class="NotificationImage full" src="@stmImgSrc" />
+                    <i class="icon-large icon-pencil editImageIcon"></i>
+                    <i class="icon-large icon-trash deleteImageIcon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <label class="form-label span3">Offer Full Description</label>
+        <div class="span9">
+            @Html.TextAreaFor(m => notificationMessage.OfferMessage.MessageDescription, new { @class = "span9", maxlength=300 })
+            <p>Visible to mobile app user. Please do not enter more than 300 characters.</p>
+        </div>
+    </div>
+    <br />
+    <div class="row-fluid NotificationsTabButtons" style="margin-bottom: 20px;">
+        <input type="submit" value="@ViewBag.ActionText" class="btn btn-large btn-primary SubmitBtn" id="SubmitBtn" />
+        <input type="submit" value="Cancel" class="btn btn-large CancelBtn" id="CancelBtn" />
+    </div>
+</div>
+<script>
+    LiveKart.attachEventHandlers();
+    LiveKart.attachFileUploader("notificationMessage_MessageThumbImage", ".tab-content");
+    LiveKart.attachFileUploader("notificationMessage_OfferMessage_MessageImage", ".tab-content");
+    
+    $("[name='notificationMessage.OfferMessage.MessageHeader']").rules("add", {
+        maxlength: 300,
+        messages: {
+            maxlength: "Seems too long!"
+        }
+    });
+</script>

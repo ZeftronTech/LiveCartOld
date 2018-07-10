@@ -1,0 +1,150 @@
+﻿@model LiveKart.Entities.Company
+@{
+	ViewBag.Title = "Details";
+	Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+<div id="masthead">
+	<div class="container">
+		<div class="masthead-pad">
+			<div class="masthead-text">
+				<div class="span4" style="margin: 0;">
+					<h1>
+						DetailCompany
+					</h1>
+				</div>
+			</div>
+			<!-- /.masthead-text -->
+		</div>
+	</div>
+</div>
+<!-- /.container -->
+<div id="content">
+	<div class="container">
+		<div class="row-fluid">
+			@using (Html.BeginForm("Edit", "Company", FormMethod.Post, new { id = "newCompany", @class = "form-horizontal" }))
+			{
+
+				@Html.TextBox("hdnFieldEmailId1", Model.CompanyId, new { id = "hdnFieldEmailId1", style = "display: none;" })
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.CompanyName, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.CompanyName, new { required = "", @class = "span4" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.ContactPerson, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.ContactPerson, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Email, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.Email, new { @class = "span4", autocomplete = "off" })
+						</div>
+					</div>
+				</div>
+
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Address1, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.Address1, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Address2, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.Address2, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.City, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.City, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.State, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.State, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.CountryID, new { @class = "form-label span4" })
+							@ViewBag.CountryName
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Zip, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.Zip, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Phone, new { @class = "form-label span4" })
+							@Html.DisplayFor(model => model.Phone, new { @class = "span4" })
+						</div>
+					</div>
+				</div>
+
+
+
+				<div class="form-row row-fluid">
+					<div class="span12">
+						<div class="row-fluid">
+							@Html.LabelFor(model => model.Image, new { @class = "form-label span4" })
+							<div class="span8">
+								<div class="span4 uploadedImage">
+								</div>
+								@Html.HiddenFor(model => model.Image)
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="row-fluid form-actions">
+					<div class="span12">
+						@Html.ActionLink("Edit", "Edit", new { id = Model.CompanyId }, new { @class = "btn btn-large btn-primary" })
+						@Html.ActionLink("Cancel", "Index", 0, new { @class = "btn btn-large btn-secondary" })
+					</div>
+				</div>
+
+			}
+			<div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	$(".uploadedImage").html('<img src="' + $("#Theme").val().replace('~', '') + '" />');
+</script>

@@ -1,0 +1,116 @@
+﻿@model IEnumerable<LiveKart.Entities.Company>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+    
+}
+<div style="margin-right: 120px; margin-top: 20px; margin-bottom: 20px">
+    <a class="btn btn-large btn-primary" href="@Url.Action("Create")" style="float:right;">
+        New Company</a></div>
+<br />
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Manage Company</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+    <!-- /.container -->
+</div>
+<!-- End .title -->
+<div class="content top">
+    <div class="container">
+        @if (Model.Count() == 0)
+        { 
+            <h3>
+                No company created.
+            </h3>
+        }
+        @if (Model.Count() > 0)
+        {          
+            <table class="responsive table table-striped table-bordered dTable">
+                <thead>
+                    <tr>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Image)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.CompanyName)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.ContactPerson)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Email)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Address)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                            @Html.DisplayNameFor(model => model.Active)
+                        </th>
+                        <th class="no_sort to_hide_phone">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        string delBtnId = "btnDelete" + item.CompanyId;
+                        string becomeCompanyId = "btnCompany" + item.CompanyId;
+                        <tr>
+                            <td>
+                                @if (item.Image != null && item.Image != "")
+                                {
+                                    <img src="@Url.Content(item.Image)"  alt='Photo' height="35px" width="35px"/>
+                                }
+                                else
+                                {
+                                    <img src="@Url.Content("~/Content/img/Grid/no-image-icon.jpg")"  alt='Photo'  height="35px" width="35px" />
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.CompanyName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ContactPerson)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                <div class="toggle slide">
+                                    <input type="checkbox" name="Active" id="Active" data-val="true" value="true" @(item.Active  ? "checked" : "") disabled/>
+                                    <label for="Active">
+                                        <div class="card slide">
+                                        </div>
+                                    </label>
+                                </div>
+                            </td>
+                            <td class="ms">
+                                <div class="btn-group1">
+                                    <a href="@Url.Action("Edit", "Company", new { id = item.CompanyId })" class="btn btn-small" rel="tooltip" data-placement="left" data-original-title=" modify ">
+                                        <img src="@Url.Content("~/Content/img/Grid/editg.gif")" width="10" height="10" alt="Edit" title="Edit" /></a>&nbsp;
+                                    <a  href="@Url.Content("~/Company/Details?id=" + item.CompanyId + "&Countryid=" + item.CountryID + "")">
+                                        &nbsp;&nbsp;
+                                        <img src="@Url.Content("~/Content/img/Grid/details.png")" width="10" height="10" alt="Details" border="0" title="Details" /></a>&nbsp;&nbsp;
+                                    <a href="@Url.Action("Delete", "Company", new { id = item.CompanyId })" id='@delBtnId' class="btn btn-inverse btn-small" rel="tooltip" data-placement="bottom" data-original-title=" Remove ">
+                                        <img src="@Url.Content("~/Content/img/Grid/deleteg.png")" width="10" height="10" alt="Delete" title="Delete" /></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+<script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>

@@ -1,0 +1,117 @@
+﻿@model LiveKart.Entities.BeaconDeployment
+
+@{
+    ViewBag.Title = "Deploy";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+    List<LiveKart.Entities.Beacon> beacons = ViewBag.Beacons;
+    List<LiveKart.Entities.Asset> assets = ViewBag.Assets;
+}
+
+<div id="masthead">
+    <div class="container">
+        <div class="masthead-pad">
+            <div class="masthead-text">
+                <div class="span4" style="margin: 0;">
+                    <h1>
+                        Deploy Beacon</h1>
+                </div>
+            </div>
+            <!-- /.masthead-text -->
+        </div>
+    </div>
+</div>
+<!-- /.container -->
+<div id="content">
+    <div class="container">
+        <div class="row-fluid">
+            @using (Html.BeginForm("Deploy", "Beacon", FormMethod.Post, new { id = "frmDeploy", @class = "form-horizontal" }))
+            {
+                
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        @Html.LabelFor(model => model.BeaconID, new { @class = "form-label span4" })
+                        <div class="row-fluid span4">
+                            @Html.DropDownListFor(model => model.BeaconID, new SelectList(beacons, "BeaconID", "BeaconName", Model.BeaconID), new { @class = "row-fluid" })
+                        </div>
+                    </div>
+                </div> 
+                
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        @Html.LabelFor(model => model.AssetID, new { @class = "form-label span4" })
+                        <div class="row-fluid span4">
+                            @Html.DropDownListFor(model => model.AssetID, new SelectList(assets, "AssetID", "AssetName", Model.AssetID), new { @class = "row-fluid" })
+                        </div>
+                    </div>
+                </div>   
+                                                                        
+                <div class="row-fluid form-actions">
+                    <div class="span12">
+                        <input type="submit" value="Create" class="btn btn-large btn-primary" />
+                        @Html.ActionLink("Cancel", "Index", 0, new { @class = "btn btn-large btn-secondary" })
+                    </div>
+                </div>
+                
+            }
+        </div>
+    </div>
+</div>
+<script  type="text/javascript" src="@Url.Content("~/Content/js/plugins/jquery.uniform.min.js")"> </script>
+@section JavaScript {
+    <script type="text/javascript">
+        $(window).load(function () {
+            $("#AssetID").prepend("<option value='0'>Select Asset</option>").val('0');
+            var beaconID = '@Model.BeaconID';
+            
+            $("#BeaconID > option").each(function () {
+                this.text = this.text + ' (' + this.value + ')';
+            });
+            $("#BeaconID").prepend("<option value=''>Select Beacon</option>");
+            if (beaconID == '') {
+                $("#BeaconID").val('');
+            }
+            $("#frmDeploy").validate({
+                debug : true,
+                rules: {
+                    AssetID: { required: true, min: 1 },
+                    BeaconID: { required: true }
+                },
+                messages: {
+                    AssetID: "Required!",
+                    BeaconID: "Required!"
+                }
+            });
+
+            $('#frmDeploy').submit(function () {
+                //if ($(this).validate().form()) {
+                    $('body').showLoading();
+                    $.ajax({
+                        url: this.action,
+                        type: this.method,
+                        data: $(this).serialize(),
+                        success: function (result) {
+                            if (result.Status == "Ok") {
+                                showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                                setTimeout(function () {
+                                    window.location = result.ReturnUrl;
+                                }, 300);
+                            }
+                            else {
+                                $('body').hideLoading();
+                                showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                            }
+                        },
+                        error: function (result) {
+                            $('body').hideLoading();
+                            showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                            return false;
+                        }
+                    });
+                //}
+                //return false;
+            });
+        });
+    </script>
+}
+
+

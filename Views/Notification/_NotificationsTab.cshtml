@@ -1,0 +1,413 @@
+﻿@using System.ComponentModel.DataAnnotations
+@model LiveKart.Entities.Notification
+@{
+	List<LiveKart.Entities.NotificationMessage> Notifications = Model.NotificationMessages.ToList();
+	LiveKart.Entities.NotificationMessage notificationMessage = new LiveKart.Entities.NotificationMessage();
+    notificationMessage.NotificationId = Model.NotificationID;
+	var isAnywhere = Model.NotificationType != 1;
+}
+@Html.HiddenFor(m => notificationMessage.NotificationId)
+<div id="notificationList">
+	<div class="row-fluid">
+		<div class="span9">
+			<h2>Notifications</h2>
+		</div>
+		<div class="span3">
+			<input type="button" value="Add New" class="btn btn-large btn-primary" style="float: right" id="AddMessageBtn" />
+		</div>
+	</div>
+	<br />
+	<table class="responsive table table-striped table-bordered dTable2">
+		<thead>
+			<tr>
+				<th class="no_sort span2">
+					Notification Title
+				</th>
+				<th class="no_sort span2">
+					Notification Description
+				</th>
+				<th class="no_sort span2">
+					Notification Type
+				</th>
+				<th class="no_sort span2">
+					Proximity Status
+				</th>
+				<th class="no_sort span1">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var notification in Notifications)
+			{
+				<tr>
+					<td>
+						@notification.NotificationTitle
+					</td>
+					<td>
+						@notification.NotificationDescription
+					</td>
+				    <td>
+				        @{
+				            var type = "";
+				            switch (notification.NotificationType)
+				            {
+				                case 0:
+				                    type = "Standard Message";
+				                    break;
+                                case 1:
+				                    type = "Offer";
+				                    break;
+                                case 2:
+				                    type = "Survey Message";
+				                    break;
+                                case 3:
+				                    type = "Product Review";
+				                    break;
+                                case 4:
+				                    type = "Product Rating";
+                                    break;
+				            }
+				        }
+				        @type
+				    </td>
+				    <td>
+				        @{
+				            var proximityName = "";
+				            var isUsed = "isUsed";
+				        }
+				        @if (notification.ProximityRange == 0)
+				        { 
+				            if(isAnywhere) {<text>Anywhere (Active)</text>} else {<text>Anywhere (Inactive)</text>}
+				            proximityName = "Anywhere";
+				        }
+				        else if (notification.ProximityRange == 1)
+				        { 
+				            if(isAnywhere) {<text>Close (Inactive)</text>} else {<text>Close (Active)</text>}
+                            proximityName = "Close";
+				        }
+				        else if (notification.ProximityRange == 2)
+				        { 
+				            if(isAnywhere) {<text>Near (Inactive)</text>} else {<text>Near (Active)</text>}
+                            proximityName = "Near";
+				        }
+				        else if (notification.ProximityRange == 3)
+				        { 
+				            if(isAnywhere) {<text>Far (Inactive)</text>} else {<text>Far (Active)</text>}
+                            proximityName = "Far";
+				        }
+				        else
+				        { 
+				            <text>Unassigned</text>
+				            isUsed = "";
+				        }
+				    </td>
+					<td>
+					    <i class="icon-large icon-pencil" value="@notification.NotificationMessageId"></i>
+					    <a href="/NotificationMessage/Delete/@notification.NotificationMessageId" 
+                            class="icon-trash icon-large @isUsed" proximity="@proximityName" title="Remove Notification">
+					    </a>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<div id="editMessageForm" style="display: none;">
+    @Html.HiddenFor(m => notificationMessage.NotificationId)
+    @Html.HiddenFor(m => notificationMessage.NotificationMessageId)
+    @Html.HiddenFor(m => m.NotificationID)
+    <div class="form-row row-fluid">
+        <div class="row-fluid">
+            <div class="span9">
+                <h2 id="tabTitle">Create Notification</h2>
+            </div>
+        </div>
+        <br />
+
+        <div class="span12">
+            <div class="row-fluid">
+                <label class="form-label span3">Notification Type</label>
+                <div class="span9">
+                    @Html.DropDownListFor(m => notificationMessage.NotificationType, new List<SelectListItem>
+                        { 
+                            new SelectListItem { Value = "" , Text = "Select message type" },
+                            new SelectListItem { Value = "0" , Text = "Standard Message" },
+                            new SelectListItem { Value = "1", Text = "Offer"},
+                            new SelectListItem { Value = "2" , Text = "Survey Message" },
+                            new SelectListItem { Value = "3" , Text = "Product Review" },
+                            new SelectListItem { Value = "4", Text = "Product Rating" }
+                        }, new { @class = "span9" })
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="form-label span3">Notification Title</label>
+                <div class="span9">
+                    @Html.TextBoxFor(m => notificationMessage.NotificationTitle, new { @class = "span9" })
+                    @Html.ValidationMessageFor(m => notificationMessage.NotificationTitle)
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="form-label span3">Notification Description</label>
+                <div class="span9">
+                    @Html.TextAreaFor(m => notificationMessage.NotificationDescription, new { @class = "span9" })
+                    @Html.ValidationMessageFor(m => notificationMessage.NotificationDescription)
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div id="standardMessage"></div>
+    <div id="offerMessage"></div>
+    <div id="surveyMessage"></div>
+    <div id="reviewMessage"></div>
+    <div id="ratingMessage"></div>
+</div>
+<div class="modal fade" id="notificationDeleteConfirm" style="display: none">
+    <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>This notification is assigned to the proximity %proximity%</p>
+            <p>Are you sure want to delete it?</p>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" id="dleteQuestionId"/>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary">Yes, delete it</button>
+        </div>
+    </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    $(function () {
+        //validates and sends standardmessage
+        function attachStandardMessageValidator() {
+            var form = $('#notifications #frmNotificationTab');
+            form.submit(function (e) {
+                form.find('[name="notificationMessage.NotificationId"]')
+	                .val($('#overview input[name="NotificationID"]').val());
+
+                if (!form.find('[name="notificationMessage.NotificationTitle"]').val()) {
+                    e.preventDefault();
+                    showNotification({ message: "Please fill in Notification Title field", type: "error", autoClose: true, duration: 4 });
+                    return false;
+                }
+            });
+        }
+
+        $('#notificationMessage_NotificationType').change(function(e) {
+            var value = $(e.target).val();
+            $('#standardMessage, #surveyMessage, #offerMessage, #ratingMessage, #reviewMessage').empty();
+            formCleanup();
+            var form = $('#notifications #frmNotificationTab');
+            form.find('[name="notificationMessage.NotificationId"]').val($('#overview input[name="NotificationID"]').val());
+            var validationFunction;
+            switch (value) {
+                case "0":
+                    showSpecificMessage({ actionName: "StandardMessage", containerId: "standardMessage" });
+                    break;
+                case "1":
+                    showSpecificMessage({ actionName: "OfferMessage", containerId: "offerMessage" });
+                    break;
+                case "2":
+                    showSpecificMessage({ actionName: "SurveyMessage", containerId: "surveyMessage" });
+                    break;
+                case "3":
+                    showSpecificMessage({ actionName: "ProductReview", containerId: "reviewMessage" });
+                    break;
+                case "4":
+                    showSpecificMessage({actionName: "ProductRating", containerId: "ratingMessage"});
+                    break;
+            }
+        });
+
+        $('#notificationMessage_NotificationType').trigger('change');
+
+        $('#AddMessageBtn').click(function () {
+            $('#SubmitBtn').val('Create');
+            delete LiveKart.messageId;
+            $('#notificationMessage_NotificationType').prop('disabled', false);
+            formCleanup();
+            $('#editMessageForm').show();
+            $('#notificationList').hide();
+        });
+
+        $('#notificationList .icon-pencil').click(function (e) {
+            $('#SubmitBtn').val('Save');
+            $('#notificationMessage_NotificationType').prop('disabled', true);
+            var messageId = $(e.target).attr("value");
+
+            fillMessageDetails(messageId);
+
+            function fillMessageDetails(messageId) {
+                if (!window.LiveKart) {
+                    window.LiveKart = {};
+                }
+                window.LiveKart.messageId = messageId;
+                var loadingArea = $('.tab-content');
+                loadingArea.showLoading();
+                $.get("/NotificationMessage/NotificationMessage/" + messageId, function (data) {
+                    var editForm = $('#editMessageForm');
+                    editForm.find('#notificationMessage_NotificationType').val(data.NotificationType);
+                    $('#notificationMessage_NotificationType').trigger('change');
+                    setTimeout(function () {
+                        editForm.find('#notificationMessage_NotificationMessageId').val(data.NotificationMessageId);
+                        editForm.find('#notificationMessage_NotificationTitle').val(data.NotificationTitle);
+                        editForm.find('#notificationMessage_NotificationDescription').val(data.NotificationDescription);
+                        loadingArea.hideLoading();
+                    }, 500);
+                });
+            }
+
+            $('#editMessageForm').show();
+            $('#notificationList').hide();
+        });
+
+        //cleans all filled fields
+        function formCleanup() {
+            var container = $('#editMessageForm');
+            container.find('#questionsContainer').empty();
+            container.find('input:not(.btn)').val('');
+            container.find('.deletedFlag').val('false');
+            container.find('textarea').val('');
+            container.find('img').attr('src', '/Content/notificationimages/img-placeholder.png');
+        }
+
+        function showSpecificMessage(typeSettings) {
+            $('.tab-content').showLoading();
+            var id = LiveKart.messageId;
+            var idParam = '';
+            if (id) {
+                idParam = '?messageId=' + id;
+            }
+            $.get('/NotificationMessage/' + typeSettings.actionName + idParam, function (result) {
+                $('#' + typeSettings.containerId).html(result).show();
+                $('.tab-content').hideLoading();
+            });
+        }
+
+        if (!window.LiveKart) {
+            window.LiveKart = {};
+        }
+
+        if (!window.LiveKart.attachFileUploader) {
+            window.LiveKart.attachFileUploader = function(modelInputId, containerSelector) {
+                $('#'+modelInputId + 'File').change(function() {
+                    var formData = new FormData();
+                    var fileControl = $('#' + modelInputId + "File")[0];
+                    var file = fileControl.files[0];
+                    var types = $(fileControl).attr("accept");
+                    var error;
+                    if ($(fileControl).attr("accept") && !($.inArray(file.type, types.split(',')) > -1)) {
+                        error = 'This file type is not supported. Supported types are ' + types;
+                    } else if (!file.size) {
+                        error = 'Cannot read file.';
+                    }
+                    if (error) {
+                        showNotification({ message: error, type: "error", autoClose: true, duration: 5 });
+                        return false;
+                    }
+                    formData.append('file', file);
+                    $("#" + modelInputId).val();
+                    formData.append("preField", modelInputId);
+                    $(containerSelector).showLoading();
+                    $.ajax({
+                        url: '@Url.Action("UploadImage", "NotificationMessage")',
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        complete: function() {
+                            $(containerSelector).hideLoading();
+                        },
+                        success: function(result) {
+                            if (result.Status == "Ok") {
+                                $('#' + modelInputId + "Img").attr('src', result.ReturnUrl);
+                                $('#' + modelInputId).val(result.ReturnUrl);
+                            } else {
+                                showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                            }
+                        },
+                        error: function(result) {
+                            showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                        }
+                    });
+                });
+            };
+        }
+	    
+        $("#frmNotificationTab").validate({
+            rules: {
+                "notificationMessage.NotificationTitle": { required: true, maxlength: 100 },
+                "notificationMessage.NotificationDescription": {maxlength: 250}
+            },
+            messages: {
+                "notificationMessage.NotificationTitlee": { required: "This field is required", maxlength: "Seems too long!" },
+                "notificationMessage.NotificationDescription": { maxlength: "Seems too long!" }            
+            },
+	        errorPlacement: function (error, element) {
+                //special error message placement for some fields to prevent breaking markup
+	            if (element.hasClass('itemName')) {
+	                element.closest('.ratingItem').after(error); 
+	            }
+	            if (element.hasClass('option') || element.hasClass('question')) {
+	                element.closest('.row-fluid').after(error);
+	            }
+	            else {
+	                element.after(error);
+	            }
+	        }
+	    });
+	    
+	    $('#frmNotificationTab').submit(function () {
+	        if ($(this).validate().form()) {
+	            console.log("valide");
+	        }
+	    });
+
+        $('.isUsed').click(function() {
+
+        });
+
+
+	    LiveKart.attachEventHandlers = function() {
+	        $('.editImageIcon').unbind('click');
+	        $('.editImageIcon').click(function(e) {
+	            var container = $(e.target).closest('.row-fluid');
+	            $('input[type="file"]', container).trigger('click');
+	        });
+
+	        $('.deleteImageIcon').unbind('click');
+	        $('.deleteImageIcon').click(function(e) {
+	            var container = $(e.target).closest('.row-fluid');
+	            $('img', container).attr('src', '/Content/notificationimages/img-placeholder.png');
+	            $('[type="text"]', container).val('');
+	        });
+
+	        $('.CancelBtn').unbind('click');
+	        $('.CancelBtn').click(function(e) {
+	            e.preventDefault();
+	            $('#standardMessage, #surveyMessage, #offerMessage, #ratingMessage, #reviewMessage').empty();
+	            $('#notificationMessage_NotificationType').val('');
+	            $('#editMessageForm').hide();
+	            $('#notificationList').show();
+	        });
+	    };
+        
+        //prompt for removing notification with assigned proximity
+	    $('.isUsed').click(function (e) {
+	        e.preventDefault();
+	        LiveKart.NotificationDeleteAction = $(e.target).attr('href');
+	        var text = $('#notificationDeleteConfirm .modal-body p:first').text();
+	        $('#notificationDeleteConfirm .modal-body p:first')
+	            .text(text.replace('%proximity%', $(e.target).attr('proximity')));
+	        $('#notificationDeleteConfirm').modal('show');
+	    });
+
+	    $('#notificationDeleteConfirm .btn-primary').click(function () {
+	        window.location = LiveKart.NotificationDeleteAction;
+	    });
+
+	});
+</script>

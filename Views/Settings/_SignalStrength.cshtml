@@ -1,0 +1,35 @@
+﻿@model LiveKart.Entities.Settings
+<div id="editSignalStrengthForm" style="">
+	<div class="form-row row-fluid">
+		<div class="row-fluid">
+			<div class="span9">
+				<h2 id="tabTitle">Configure Signal Strength Settings</h2>
+			</div>
+		</div>
+		<br />
+		<div class="form-row row-fluid">
+			<div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px; margin: 10px 0 10px 0">
+				<h5>Proximity Signal Strength</h5>
+			</div>
+		</div>
+		<div class="span12">
+			<div class="row-fluid">
+				<label class="form-label span3">Signal Strength Window</label>
+				<div class="span9">
+					@Html.DropDownListFor(model => model.SignalStrength, 
+											new List<SelectListItem>
+											{ 
+											   new SelectListItem { Value = "0" , Text = "Small" },
+											   new SelectListItem { Value = "1" , Text = "Medium" },
+											   new SelectListItem { Value = "2" , Text = "Strong" }
+											},
+											new { @class = "row-fluid" })
+					<p>Some description text to go here.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<hr />
+</div>
+<script>
+</script>

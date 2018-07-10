@@ -1,0 +1,301 @@
+﻿@model LiveKart.Entities.Notification
+@{
+    List<LiveKart.Entities.NotificationMessage> alerts = Model.NotificationMessages == null ? new List<LiveKart.Entities.NotificationMessage>() : Model.NotificationMessages.ToList();
+
+    dynamic proximities = new {
+        NotificationId = ViewBag.NotificationId,
+        Proximity0 = alerts.Where(a=> a.ProximityRange == 0).Select(a => a.NotificationMessageId).FirstOrDefault(),
+        Proximity1 = alerts.Where(a => a.ProximityRange == 1).Select(a => a.NotificationMessageId).FirstOrDefault(),
+        Proximity2 = alerts.Where(a => a.ProximityRange == 2).Select(a => a.NotificationMessageId).FirstOrDefault(),
+        Proximity3 = alerts.Where(a => a.ProximityRange == 3).Select(a => a.NotificationMessageId).FirstOrDefault()
+    };
+    dynamic notificationMessages = from a in alerts
+                                   select new
+                                   {
+                                       id = a.NotificationMessageId,
+                                       selected = a.ProximityRange != null,
+                                       disabled = a.Disabled
+                                   };
+}
+<H2>Set Proximity</H2>
+<br />
+@{
+    var isProximityBased = Model.NotificationType == 1 ? "checked" : "";
+    var isAnywhere = Model.NotificationType != 1 ? "checked" : "";
+}
+<div class="form-row row-fluid">
+    <div class="span12">
+        <div class="switch" style="width: 200px">
+            <input type="radio" class="switch-input" name="NType" value="1"
+                id="rdProximityBased" @isProximityBased>
+            <label for="rdProximityBased" class="switch-label switch-label-off">
+                Proximity Based</label>
+            <input type="radio" class="switch-input" name="NType" value="0"
+                id="rdAnywhere" @isAnywhere>
+            <label for="rdAnywhere" class="switch-label switch-label-on">
+                Anywhere</label>
+            <span class="switch-selection"></span>
+        </div>
+        @Html.HiddenFor(m => Model.NotificationType)
+        <br />
+    </div>
+</div>
+
+<br />
+<div class="form-row row-fluid" id="pnlanywhere">
+    <div class="form-row row-fluid">
+        <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+            margin: 10px 0 10px 0">
+            <h5>
+                Anywhere
+            </h5>
+        </div>
+    </div>  
+    <div class="span8">
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <label for="NotificationTitle" class="form-label span3">
+                        Select Notification</label>
+                    <div class="span9">
+                        @Html.DropDownList("proximity0", new SelectList(alerts, "NotificationMessageId", "NotificationTitle"), "Select a notification",  new {@class = "messageSelector" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span2">
+    </div>
+    <div class="span2">
+        <div class="toggle">
+            <input type="checkbox" id="Active0" name="Active0" checked="checked" /> @*TODO: check ids*@
+            <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+        </div>
+    </div>
+
+</div>
+@*Proximity based*@
+<div id="pnlproximity">
+    <div class="form-row row-fluid">
+        <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+            margin: 10px 0 10px 0">
+            <h5>
+                Far (15 - 25 FT) @*TODO: get ranges from settings*@
+            </h5>
+        </div>
+    </div>  
+    <div class="form-row row-fluid">
+        <div class="span8">
+            <div class="form-row row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <label for="proximity1" class="form-label span3">
+                            Select Notification</label>
+                        <div class="span9">
+                            @Html.DropDownList("proximity3", new SelectList(alerts, "NotificationMessageId", "NotificationTitle"), "Select a notification", new {@class = "messageSelector" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row row-fluid"></div>
+        </div>
+        <div class="span2">
+        </div>
+        <div class="span2">
+            <div class="toggle">
+                <input type="checkbox" id="Active3" name="Active3" checked="checked" />
+                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+            </div>
+        </div>
+    </div>
+    
+        <div class="form-row row-fluid">
+        <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+            margin: 10px 0 10px 0">
+            <h5>
+                Near (10 - 15 FT) @*TODO: get ranges from settings*@
+            </h5>
+        </div>
+    </div>  
+    <div class="form-row row-fluid">
+        <div class="span8">
+            <div class="form-row row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <label for="proximity2" class="form-label span3">
+                            Select Notification</label>
+                        <div class="span9">
+                            @Html.DropDownList("proximity2", new SelectList(alerts, "NotificationMessageId", "NotificationTitle"), "Select a notification", new {@class = "messageSelector" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row row-fluid"></div>
+        </div>
+        <div class="span2">
+        </div>
+        <div class="span2">
+            <div class="toggle">
+                <input type="checkbox" id="Active2" name="Active2" checked="checked" />
+                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+            </div>
+        </div>
+    </div>
+    
+        <div class="form-row row-fluid">
+        <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+            margin: 10px 0 10px 0">
+            <h5>
+                Close (< 10 ft) @*TODO: get ranges from settings*@
+            </h5>
+        </div>
+    </div>  
+    <div class="form-row row-fluid">
+        <div class="span8">
+            <div class="form-row row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <label for="proximity3" class="form-label span3">
+                            Select Notification</label>
+                        <div class="span9">
+                            @Html.DropDownList("proximity1", new SelectList(alerts, "NotificationMessageId", "NotificationTitle"), "Select a notification", new {@class = "messageSelector" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row row-fluid"></div>
+        </div>
+        <div class="span2">
+        </div>
+        <div class="span2">
+            <div class="toggle">
+                <input type="checkbox" id="Active1" name="Active1" checked="checked" />
+                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="form-row row-fluid">
+    <div class="span12">
+        <input style="float: right; margin: 2% 2% 0 31.3%;" type="button" value="Continue"
+            id="submitnotification" class="btn btn-large btn-primary" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#overview").addClass("active");
+
+        $(".nav-tabs li a").click(function () {
+            if ($(this).hasClass('active')) { return false; }
+            if (($(this).attr("href") == "#notifications" || $(this).attr("href") == "#offer" || $(this).attr("href") == "#schedule") && ($("#NotificationId").val() == "" || $("#NotificationId").val() == "0")) {
+                showNotification({ message: "Please provide campaign details first.", type: "information", autoClose: true, duration: 4 });
+                return false;
+            }
+            $(".tab-pane").removeClass("active");
+            $($(this).attr('href')).addClass("active");
+
+            var container = $('#proximity');
+            $('input:radio[name=NType]', container).change(function () {
+                if ($(this).val() == '1') {
+                    $("#pnlproximity", container).show();
+                    $("#pnlanywhere", container).hide();
+                    $('#NotificationType').val(1);
+                } else {
+                    $("#pnlanywhere", container).show();
+                    $("#pnlproximity", container).hide();
+                    $('#NotificationType').val(0);
+                }
+            });
+            $('input:radio[name=NType]:checked', container).trigger('change');
+
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var proximities = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(proximities));
+        var notifications = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(notificationMessages));
+
+        $('#proximity #submitnotification').click(function(e){
+            e.preventDefault();
+            for(var i = 0; i < 4; i++){
+                var messageid = $('#proximity' + i).val();
+                proximities["Proximity"+i] = messageid;
+            }
+            $('.tab-content').showLoading();
+            var disabledNotifications = [];
+            _.each(notifications, function(n){
+                if(n.disabled){
+                    disabledNotifications.push(n.id);
+                }
+            });
+            proximities.DisabledNotifications = JSON.stringify(disabledNotifications);
+            proximities.NotificationType = $('#NotificationType').val();
+            $.post('/proximity/post', proximities, function(){
+            	window.location.reload();
+                $('a[href="#schedule"]').click();
+                $('.tab-content').hideLoading();
+            });
+        })
+
+        for(var i = 0; i < 4; i++){
+            $('#proximity' + i).val(proximities["Proximity" + i]);
+            var selected = _.findWhere(notifications, { id: proximities["Proximity" + i]});
+            var disabled = false;
+            if(selected){
+                disabled = selected.disabled;
+            }
+            $('#Active' + i).prop('checked', !disabled);
+            $('#proximity' + i).prop('disabled', disabled);
+            filterOutSelectedOptions();
+        };
+
+        function getSelected(){
+            var selectedIds = [];
+            for(var i = 0; i < 4; i++){
+                selectedIds.push($('#proximity'+i).val());
+            }
+            for(var j = 0; j<notifications.length; j++){
+                notifications[j].selected = selectedIds.indexOf(notifications[j].id.toString()) != -1;
+            }
+        }
+
+        function filterOutSelectedOptions(){
+            getSelected();
+            $('select option').show();
+            for(var i = 0; i < 4; i++){
+                for(var j = 0; j<notifications.length; j++){
+                    if(notifications[j].selected && notifications[j].id != proximities["Proximity" + i])
+                    {
+                        $('#proximity'+i + ' option[value='+ notifications[j].id +']' ).hide();
+                    }
+                }
+            };
+        };
+        $('select').change(filterOutSelectedOptions);
+
+        $('.toggle input[type="checkbox"]').change(function(e){
+            for(var i = 0; i < 4 ; i++){
+                var disabled = !$('#Active' + i).prop('checked');
+
+                if(disabled){
+                    $('#proximity' + i).prop('disabled', true);
+                }
+                else{
+                    $('#proximity' + i).prop('disabled', false);
+                }
+
+                var selectedMessage = $('#proximity' + i + ' option:selected').val();
+                if(selectedMessage){
+                    selectedMessage = parseInt(selectedMessage);
+                    var notification = _.findWhere(notifications, { id: selectedMessage});
+                    if(notification){
+                        notification.disabled = disabled;
+                    }
+                }
+            }
+        });
+    });
+</script>
+

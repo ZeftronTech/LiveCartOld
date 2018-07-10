@@ -1,0 +1,198 @@
+﻿@using LiveKart.Entities
+@model LiveKart.Entities.NotificationMessage
+
+@{
+    NotificationMessage notificationMessage = Model;
+    string thumbSrc = notificationMessage.MessageThumbImage ?? "/Content/notificationimages/img-placeholder.png";
+}
+@Html.HiddenFor(m => notificationMessage.ReviewMessage.ReviewMessageId)
+@Html.HiddenFor(m => notificationMessage.ProductReviewId)
+<div class="form-row row-fluid">
+    <div class="span12">
+        <div class="switch" style="width: 200px">
+            <input type="radio" class="switch-input" name="answers" value="1"
+                   id="ProductReview" checked="checked" />
+            <label for="ProductReview" class="switch-label switch-label-off">
+                Product Review</label>
+            <input type="radio" class="switch-input" name="answers" value="0"
+                id="Answers">
+            <label for="Answers" class="switch-label switch-label-on">
+                Answers</label>
+            <span class="switch-selection"></span>
+        </div>
+        <br />
+    </div>
+</div>
+<div id="review">
+    <h2>Product Review Content</h2>
+    <br />
+    <div class="span12" style="width: 100%; margin-left: 0px;">
+        <div class="row-fluid">
+            <label class="form-label span3">Notification Header</label>
+            <div class="span9">
+                @Html.TextBoxFor(m => notificationMessage.ReviewMessage.MessageHeader, new { @class = "span9" })
+                @Html.ValidationMessageFor(m => notificationMessage.ReviewMessage.MessageHeader)
+                <p>Visible to the mobile app user.</p>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="form-label span3">Notification Short Description</label>
+            <div class="span9">
+                @Html.TextAreaFor(m => notificationMessage.ReviewMessage.MessageShortDescription, new { @class = "span9", maxlength=100 })
+                @Html.ValidationMessageFor(m => notificationMessage.ReviewMessage.MessageShortDescription)
+                <p>Visible to mobile app user. Please do not enter more than 100 characters.</p>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="form-label span3">Notification Image(thumbnail image)</label>
+            <div class="span9">
+                @Html.TextBoxFor(m => notificationMessage.MessageThumbImage, new { style = "display: none"})
+                <input type="file" id="notificationMessage_MessageThumbImageFile" style="display: none;"/>
+                <div class="span9">
+                    <div class="span6 offset3">
+                        <img id="notificationMessage_MessageThumbImageImg" class="NotificationImage thumb" src="@thumbSrc" />
+                        <i class="icon-large icon-pencil editImageIcon"></i>
+                        <i class="icon-large icon-trash deleteImageIcon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row-fluid">
+            <label class="form-label span3">Product Review Image(full screen image)</label>
+            <div class="span9">
+                @Html.TextBoxFor(m => notificationMessage.ReviewMessage.MessageImage, new {style = "display: none" })
+                <input type="file" id="notificationMessage_ReviewMessage_MessageImageFile" style="display: none;"/>
+                <div class="span9">
+                    <div class="span6 offset3">
+                        @{
+                            string revImgSrc = notificationMessage.ReviewMessage.MessageImage ?? "/Content/notificationimages/img-placeholder.png";
+                        }
+                        <img id="notificationMessage_ReviewMessage_MessageImageImg" class="NotificationImage full" src="@revImgSrc" />
+                        <i class="icon-large icon-pencil editImageIcon"></i>
+                        <i class="icon-large icon-trash deleteImageIcon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="form-label span3">Product Review Full Description</label>
+            <div class="span9">
+                @Html.TextAreaFor(m => notificationMessage.ReviewMessage.MessageDescription, new { @class = "span9", maxlength=300 })
+                @Html.ValidationMessageFor(m => notificationMessage.ReviewMessage.MessageDescription)
+                <p>Visible to mobile app user. Please do not enter more than 300 characters.</p>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="form-label span3">Product Review Entry Feilds</label>
+            <div class="span9 entryFields">
+                <label class="checkbox"><input type="checkbox" disabled="disabled" checked="checked"/>Title</label>
+                <label class="checkbox"><input type="checkbox" disabled="disabled" checked="checked"/>Review</label>
+                <label class="checkbox">@Html.CheckBoxFor(m => notificationMessage.ReviewMessage.ScreenName) Screen Name</label>
+                <label class="checkbox">@Html.CheckBoxFor(m => notificationMessage.ReviewMessage.City) City</label>
+                <label class="checkbox">@Html.CheckBoxFor(m=> notificationMessage.ReviewMessage.State) State</label>
+            </div>
+        </div>
+        <br />
+        <div class="row-fluid NotificationsTabButtons" style="margin-bottom: 20px;">
+            <input type="submit" value="@ViewBag.ActionText" class="btn btn-large btn-primary SubmitBtn" id="SubmitBtn" />
+            <input type="submit" value="Cancel" class="btn btn-large CancelBtn" id="CancelBtn" />
+        </div>
+    </div>
+</div>
+<div id="answers" style="display: none">
+    <table class="responsive table table-striped table-bordered dTable2">
+		<thead>
+			<tr>
+				<th class="no_sort span2">
+					Title
+				</th>
+				<th class="no_sort span4">
+					Review
+				</th>
+				<th class="no_sort span2">
+					Screenname
+				</th>
+				<th class="no_sort span2">
+					City
+				</th>
+			    <th class="no_sort span1">
+			        State
+			    </th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var answer in ViewBag.Answers)
+			{
+			    var screenName = answer.ScreenName ?? "n/a";
+			    var city = answer.City ?? "n/a";
+			    var state = "n/a";
+                if (answer.StateId != null)
+                {
+                    state = ((Enums.State) answer.StateId).ToString();
+                }
+				<tr>
+					<td>
+						@answer.Title
+					</td>
+					<td>
+						@answer.Review
+					</td>
+				    <td>
+                        @screenName
+                    </td>
+				    <td>
+                        @city
+				    </td>
+				    <td>
+				        @state
+				    </td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>
+<script>
+    $(function () {
+        LiveKart.attachEventHandlers();
+        LiveKart.attachFileUploader("notificationMessage_MessageThumbImage", ".tab-content");
+        LiveKart.attachFileUploader("notificationMessage_ReviewMessage_MessageImage", ".tab-content");
+
+        $('.entryFields input[type="checkbox"]').change(function(e) {
+            var name = $(e.target).attr('name');
+            $('[name="' + name + '"][type="hidden"]').val($(e.target).prop('checked'));
+        });
+        
+        $('.CancelBtn').click(function (e) {
+            e.preventDefault();
+            $('#reviewMessage').empty();
+            $('#editMessageForm').hide();
+            $('#notificationList').show();
+        });
+
+        $('[name="answers"]').change(function(e) {
+            if ($(e.target).attr('id') =='Answers') {
+                $('#answers').show();
+                $('#review').hide();
+            } else {
+                $('#answers').hide();
+                $('#review').show();
+            }
+        });
+        
+        $("[name='notificationMessage.ReviewMessage.MessageHeader']").rules("add", {
+            maxlength: 100,
+            messages: {
+                maxlength: "Seems too long!"
+            }
+        });
+        $("[name='notificationMessage.ReviewMessage.MessageShortDescription']").rules("add", {
+            maxlength: 100,
+            messages: {
+                maxlength: "Seems too long!"
+            }
+        });
+
+
+    })
+</script>

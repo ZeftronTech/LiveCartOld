@@ -1,0 +1,414 @@
+﻿@model LiveKart.Entities.NotificationSchedule
+@{
+    List<LiveKart.Entities.BeaconDeployment> beacons = ViewContext.Controller.ViewBag.Beacons;
+    List<LiveKart.Entities.NotificationBeaconMap> nBeacons = ViewContext.Controller.ViewBag.NBeacons;    
+}
+@Html.HiddenFor(model => model.NotificationID)
+@Html.HiddenFor(model => model.NotificationScheduleID)
+
+@Html.HiddenFor(model => model.StartDate)
+@Html.HiddenFor(model => model.EndDate)
+<div class="form-row row-fluid stdate">
+    <div class="span12">
+        <div class="row-fluid">
+            @Html.Label("Start Date")
+            <div class="span2">
+                <input id="startDate" type="text" class="row-fluid UTCTime StartDate"/>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>
+            <div class="span2">
+                <input id="startTime" type="text" class="timepicsten UTCTime"/>
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+            <div class="span2" style="padding-left: 40px;">
+                @Html.Label("End Date")
+            </div>
+            <div class="span2 date">
+                <input id="endDate" type="text" class="row-fluid UTCTime EndDate"/>
+                <span class="add-on"><i class="icon-th"></i></span>
+            </div>
+            <div class="span2">
+                <input id="endTime" type="text" class="timepicsten UTCTime"/>
+                <span class="add-on"><i class="icon-time"></i></span>
+            </div>
+        </div>
+    </div>
+</div>
+<hr style="background-color: #2E6AAF; height: 3px" />
+<div id="deployedBeacons">
+    <table class="responsive table table-striped table-bordered dTable2">
+        <thead>
+            <tr>
+                <th class="no_sort span2">
+                    Beacon
+                </th>
+                <th class="no_sort span2">
+                    Battery Status
+                </th>
+                <th class="no_sort span2">
+                    Asset Category
+                </th>
+                <th class="no_sort span2">
+                    Asset
+                </th>
+                <th class="no_sort span2">
+                    Select Beacon
+                </th>
+                <th class="span4">
+                    Schedule
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var beacon in beacons)
+            { 
+                <tr>
+                    <td>
+                        <a data-toggle="modal" data-beaconid="@beacon.BeaconID" href="#calendar" aria-labelledby="calendarLabel" class="beaconScheduleId" id="beaconSchedule@(beacon.BeaconID)">
+                            @beacon.Beacon.BeaconName
+                            <text> (</text>
+                            @beacon.Beacon.BeaconID
+                            <text>)</text>
+                        </a>
+                    </td>
+                    <td>
+                        @if (beacon.Beacon.BatteryLevel == "0")
+                        { 
+                            <img src="../../Content/img/BatteryEmpty.png" title="Empty" />
+                        }
+                        else if (beacon.Beacon.BatteryLevel == "1")
+                        { 
+                            <img src="../../Content/img/Battery25.png" title="Low" />
+                        }
+                        else if (beacon.Beacon.BatteryLevel == "2")
+                        { 
+                            <img src="../../Content/img/75_percent.png" title="Good" />
+                        }
+                        else if (beacon.Beacon.BatteryLevel == "3")
+                        { 
+                            <img src="../../Content/img/100_percent.png" title="Full" />
+                        }
+                        else
+                        { 
+                            <img src="../../Content/img/BatteryEmpty.png" title="Empty" />
+                        }
+                    </td>
+                    <td>
+                        @beacon.Asset.AssetCategory.CategoryName
+                    </td>
+                    <td>
+                        @beacon.Asset.AssetName
+                    </td>
+                    <td>
+                        @if (nBeacons.Where(b => b.BeaconID == beacon.BeaconID).Count() > 0)
+                        {
+                            
+                            <div class="toggle">
+                                <input type="checkbox" class="chkbeacon" id="@beacon.BeaconID" value="@beacon.BeaconID" name="TargetBeacon" checked/>
+                                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                            </div>
+                        }
+                        else
+                        { 
+                            <div class="toggle">
+                                <input type="checkbox" class="chkbeacon" id="@beacon.BeaconID" value="@beacon.BeaconID" name="TargetBeacon"/>
+                                <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                            </div>
+                        }
+                    </td>
+                    <td class="beaconschedule" id="td@(beacon.BeaconID)">
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="form-row row-fluid">
+    <div class="span12">
+        <input style="float: right; margin: 2% 2% 0 31.3%;" type="submit" value="Schedule"
+            id="submitschedule" class="btn btn-large btn-primary" />
+    </div>
+</div>
+<div id="calendar" role="dialog" class="modal hide fade" style="width: 800px" tabindex="-1"
+    aria-labelledby="calendar" aria-hidden="true">
+    <div class="modal-header">
+        <a href="#" class="close" data-dismiss="modal">&times;</a>
+        <h3>
+            Beacon Schedule</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <div id="calendarcontainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*<div class="modal-footer">
+            <a href="#" class="btn" onclick="closeDialog ();">Cancel</a> <a href="#" class="btn btn-primary"
+                onclick="okClicked ();">OK</a>
+        </div>*@
+    </div>
+</div>
+@*<script src="../../Content/js/timepicker/jquery-ui-1.8.20.min.js" type="text/javascript"></script>*@
+<script src="../../Content/js/timepicker/jquery.timePicker.js" type="text/javascript"></script>
+<link href="../../Content/js/timepicker/timePicker.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+        $(window).load(function () {
+        //$(document).ready(function () {
+            $("#startTime").timePicker({
+                startTime: "00:00", // Using string. Can take string or Date object.
+                endTime: new Date(0, 0, 0, 23, 45, 0), // Using Date object here.
+                show24Hours: false,
+                separator: ':',
+                step: 15,
+            });
+            $("#endTime").timePicker({
+                startTime: "00:00", // Using string. Can take string or Date object.
+                endTime: new Date(0, 0, 0, 23, 45, 0), // Using Date object here.
+                show24Hours: false,
+                separator: ':',
+                step: 15
+            });
+        });
+</script>
+<script type="text/javascript">
+    //--------------------------------------------------SCHEDULE------------------------------------------------------------------
+
+    var dateFormat = '@System.Threading.Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()';
+    var nowTemp = new Date();
+    var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+    // format: MM/dd/yyyy
+    
+    //converts given Date object to 12 hours format
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+    }
+
+    $(document).ready(function () {
+        var utcStartDateTime = $('#Schedule_StartDate').val(); //getting utc time
+        if (utcStartDateTime) {
+            var localStartDateTime = new Date(utcStartDateTime + ' UTC'); //converting to local
+            //constructing date field value; note getMonth returns month from 0 to 11
+            $('.StartDate').val((localStartDateTime.getMonth() + 1) + '/' + (localStartDateTime.getDate()) + '/' + localStartDateTime.getFullYear());
+            $('#startTime').val(formatAMPM(localStartDateTime));
+        }
+
+        var utcEndDateTime = $('#Schedule_EndDate').val();
+        if (utcEndDateTime) {
+            var localEndDateTime = new Date(utcEndDateTime + ' UTC');
+            $('.EndDate').val((localEndDateTime.getMonth() + 1) + '/' + (localEndDateTime.getDate()) + '/' + localEndDateTime.getFullYear());
+            $('#endTime').val(formatAMPM(localEndDateTime));
+        }
+
+        var startDate = $('.StartDate').datepicker({
+            "format": 'mm/dd/yyyy',
+            onRender: function (date) {
+                return date.valueOf() < now.valueOf() ? 'disabled' : '';
+            }
+        }).on('changeDate', function (ev) {
+            var newDate = new Date(ev.date);
+            newDate.setDate(newDate.getDate() + 1);
+            endDate.setValue(newDate);
+            startDate.hide();
+            $('.chkbeacon').trigger("change");
+            $('.EndDate')[0].focus();
+        }).data('datepicker');
+
+        var endDate = $('.EndDate').datepicker({ "format": dateFormat,
+            onRender: function (date) {
+                return date.valueOf() < startDate.date.valueOf() ? 'disabled' : '';
+            }
+        }).on('changeDate', function () {
+            endDate.hide();
+            $('.chkbeacon').trigger("change");
+        }).data('datepicker');
+    });
+
+
+
+    $(document).ready(function () {
+        $("#frmSchedule").validate({
+            rules: {
+                Schedule_StartDate: { required: true, validdate: true, greaterorequal: "today" },
+                Schedule_EndDate: { required: true, validdate: true, greaterorequal: "#Schedule_StartDate" }
+            },
+            messages: {
+                Schedule_StartDate: { required: "Required!", validdate: "Invalid date!", greaterorequal: "Start date can not be less than current date." },
+                Schedule_EndDate: { required: "Required!", validdate: "Invalid date!", greaterorequal: "End date can not be less than start date." }
+            }
+        });
+
+        function GenerateSchedule(isScheduled, bschedule, beaconID) {
+        	$('#td' + beaconID).find("input[name='dtfrom" + isScheduled + beaconID + "']").each(function (i, dtfrom) {
+                var days = '';
+                $('#td' + beaconID).find("input[name='day" + isScheduled + $(dtfrom).val() + beaconID + "']:checked").each(function (j, day) {
+                    if (days.indexOf(day) == -1) {
+                        days = days + $(day).val() + ',';
+                    }
+                });
+                if (days != '') {
+                	days = days.substring(0, days.length - 1);
+                    bschedule.push({
+                        'NotificationID': $('#NotificationID').val(),
+                        'BeaconID': beaconID,
+                        'FromDate': '\/Date(' + new Date($(dtfrom).val()).toISOString() + ')\/',
+                        'ToDate': '\/Date(' + new Date($(dtfrom).parent().parent().find(".dtto").val()).toISOString() + ')\/',
+                        'Days': days
+                    });
+                }
+            });
+        }
+
+        $('#frmSchedule').submit(function () {
+            if ($(this).validate().form()) {
+                $('#content').showLoading();
+                var bschedule = new Array();
+                var beacons = new Array();
+                $("#deployedBeacons").find("input[name='TargetBeacon']:checked").each(function (index, beacon) {
+                	var beaconID = $(beacon).val();
+                    beacons.push({
+                        'NotificationID': $('#NotificationID').val(),
+                        'BeaconID': beaconID
+                    });
+                    GenerateSchedule('checked', bschedule, beaconID);
+                    GenerateSchedule('', bschedule, beaconID);
+                });
+                var data = $(this).serializeArray(); // convert form to array
+                data.push({ name: 'TargetBeacons', value: JSON.stringify(beacons) });
+                data.push({ name: 'BeaconSchedule', value: JSON.stringify(bschedule) });
+                data.push({ name: 'NotificationScheduleID', value: $("#Schedule_NotificationScheduleID").val() });
+                data.push({ name: 'NotificationID', value: $("#NotificationID").val() });
+                data.push({ name: 'StartDate', value: new Date($(".StartDate").val()).toISOString() });
+                data.push({ name: 'EndDate', value: new Date($(".EndDate").val()).toISOString() });
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: data,
+                    complete: function () {
+                        $('#content').hideLoading();
+                    },
+                    success: function (result) {
+                        if (result.Status == "Ok") {
+                            $("#Schedule_NotificationScheduleID").val(result.UniqueId);
+                            showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                        }
+                        else {
+                            showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                        }
+                    },
+                    error: function (result) {
+                        showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
+<script type="text/javascript">
+    //----------------------------------------------------Beacon Target--------------------------------------------------------
+    $(document).ready(function () {
+        $(".beaconschedule").hide();
+        function GetBeaconSchedule(schedules, selector, isScheduled) {
+            var divtoappend = $('#td' + $(selector).val());
+            $.each(schedules, function (index, schedule) {
+            	var offsetms = new Date().getTimezoneOffset() *60*1000;
+                var container = $('<div id="div"' + $(selector).val() + ' />');
+                var fDate = new Date(parseInt(schedule.FromDate.replace(/(^.*\()|([+-].*$)/g, '')) - offsetms);
+                var tDate = new Date(parseInt(schedule.ToDate.replace(/(^.*\()|([+-].*$)/g, '')) - offsetms);
+                var fromDate = fDate.getMonth() + 1 + "/" + fDate.getDate() + "/" + fDate.getFullYear();
+                var toDate = tDate.getMonth() + 1 + "/" + tDate.getDate() + "/" + tDate.getFullYear();
+                var days1 = $('<div class="span12" />');
+                var days2 = $('<div class="span12" />');
+                var dcount = 0;
+                $(schedule.Days.split(',')).each(function (index, day) {
+                	dcount = dcount + 1;
+                    if (index <= 3) {
+                        days1.append('<div class="span3"><input type="checkbox" id=' + index + 'day' + $(selector).val() + ' name="day' + isScheduled + fromDate + $(selector).val() + '" value="' + day + '"' + isScheduled + ' /><label for="' + index + 'day' + $(selector).val() + '" style="font-size:12px">' + day + '</label></div>');
+                    }
+                    else {
+                        days2.append('<div class="span3"><input type="checkbox" id=' + index + 'day' + $(selector).val() + ' name="day' + isScheduled + fromDate + $(selector).val() + '" value="' + day + '"' + isScheduled + ' /><label for="' + index + 'day' + $(selector).val() + '"  style="font-size:12px">' + day + '</label></div>');
+                    }
+                });
+                container.append('<div class="form-row row-fluid"><div class="span6"><b>From: </b><span>' + fromDate + '</span><input type="hidden" id="dtfrom' + isScheduled + index + $(selector).val() + '" name="dtfrom' + isScheduled + $(selector).val() + '" value="' + fromDate + '" /></div><div class="span6"><b>To: </b><span>' + toDate + '</span><input type="hidden" class="dtto" id="dtto' + isScheduled + index + $(selector).val() + '" name="dtto' + isScheduled + $(selector).val() + '" value="' + toDate + '" /></div></div>');
+                container.append($('<div class="form-row row-fluid" />').append(days1));
+                if (dcount > 4) {
+                    container.append($('<div class="form-row row-fluid" />').append(days2));
+                }
+                divtoappend.append(container);
+            });
+        }
+        $('.chkbeacon').change(function () {
+            if ($('.StartDate').val() == '' && $(this).is(':checked')) {
+                showNotification({ message: "Please enter start date.", type: "information", autoClose: true, duration: 4 });
+                $(this).removeAttr('checked');
+                return false;
+            }
+            if ($('.EndDate').val() == '' && $(this).is(':checked')) {
+                showNotification({ message: "Please enter end date.", type: "information", autoClose: true, duration: 4 });
+                $(this).removeAttr('checked');
+                return false;
+            }
+            $('#content').showLoading();
+            var selector = this;
+            $('#td' + $(selector).val()).html('');
+            if ($(this).is(':checked')) {
+            	$.getJSON('/Notification/GetBeaconScheduleForNotification?notificationId=' + $('#NotificationID').val() + '&beaconID=' + $(selector).val() + '&fromDate=' + $('.StartDate').val() + '&toDate=' + $('.EndDate').val(), function (schedules) {
+                    GetBeaconSchedule(schedules.Scheduled, selector, "checked");
+                    GetBeaconSchedule(schedules.Unscheduled, selector, "");
+                    $('#content').hideLoading();
+                });
+            }
+            else {
+                $('#td' + $(selector).val()).html('');
+                $('#content').hideLoading();
+            }
+            $('#td' + $(selector).val()).show();
+        });
+        $('.chkbeacon').trigger("change");
+
+        $('.beaconScheduleId').click(function () {
+        	var url = $(this).data('beaconID');
+            $('#calendarcontainer').html('');
+            $('#calendarcontainer').fullCalendar({
+                height: 650,
+                editable: false,
+                events: "/Notification/GetBeaconSchedule?beaconID=" + url,
+                loading: function (bool) {
+                    if (bool) $('#content').showLoading();
+                    else $('#content').hideLoading();
+                }
+
+            });
+        });
+        $('#calendar').on('shown.bs.modal', function () {
+            $("#calendarcontainer").fullCalendar('render');
+        });
+    });
+
+    //$(function () {
+    //	// Determine timezone offset in milliseconds
+    //	// from: http://www.w3schools.com/jsref/jsref_getTimezoneOffset.asp
+    //    var d = new Date();
+    //	var offsetms = d.getTimezoneOffset() * 60 * 1000;
+    //	var startDate = $('.StartDate').val();
+    //	var endDate = $('.EndDate').val();
+    //    if (startDate && endDate) {
+    //        var dStart = new Date(startDate) - offsetms;          
+    //        var dEnd = new Date(endDate) - offsetms;
+
+    //        $('#StartTime').val(dStart.getHours() + ":" + dStart.getMinutes());
+    //        $('#EndTime').val(dEnd.getHours() + ":" + dEnd.getMinutes());
+    //    }
+
+    //});
+</script>

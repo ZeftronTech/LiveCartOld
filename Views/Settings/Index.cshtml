@@ -1,0 +1,59 @@
+﻿@model LiveKart.Entities.Settings
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";  
+}
+
+<div id="masthead">
+	<div class="container">
+		<div class="masthead-pad">
+			<div class="masthead-text">
+				<div class="span4" style="margin: 0;">
+					<h1>Settings
+					</h1>
+				</div>
+			</div>
+			<!-- /.masthead-text -->
+		</div>
+	</div>
+	<!-- /.container -->
+</div>
+<div id="content">
+	<div class="container">
+		<div style="margin-bottom: 20px;">
+			<ul class="nav nav-tabs pattern">
+				<li class="active" style="width: 25%"><a data-toggle="tab" href="#proximity">Proximity</a></li>
+				<li style="width: 25%"><a data-toggle="tab" href="#dwelltime">Dwell Time</a></li>
+				<li style="width: 25%"><a data-toggle="tab" href="#signalstrength">Signal Strength</a></li>
+			</ul>
+			<div class="tab-content">
+				@*/////////////////////////Proximity///////////////////////////////*@
+                <div id="proximity" class="tab-pane active" style="padding: 30px;">
+					@using (Html.BeginForm("Proximity", "Settings", FormMethod.Post, new { id = "frmProximity", @class = "form-horizontal" }))
+                    {
+                        @Html.Partial("_SignalProximity", Model)
+                    }
+				</div>
+
+				@*/////////////////////////Dwell Time///////////////////////////////*@
+                <div id="dwelltime" class="tab-pane" style="padding: 30px;">
+					@using (Html.BeginForm("DwellTime", "Settings", FormMethod.Post, new { id = "frmDwellTime", @class = "form-horizontal" }))
+                    {
+                        @Html.Partial("_DwellTime", Model)
+                    }
+				</div>
+
+				@*/////////////////////////Signal Strength///////////////////////////////*@
+                <div id="signalstrength" class="tab-pane" style="padding: 30px;">
+					@using (Html.BeginForm("SignalStrength", "Settings", FormMethod.Post, new { id = "frmSignalStrength", @class = "form-horizontal" }))
+                    {
+                        @Html.Partial("_SignalStrength", Model)
+                    }
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+@section JavaScript {
+    <script language="javascript" type="text/javascript" src="@Url.Content("~/Content/js/plugins/DT_bootstrap.js")"></script>
+}

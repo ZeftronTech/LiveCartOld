@@ -1,0 +1,224 @@
+﻿@model LiveKart.Entities.NotificationProduct
+@Html.HiddenFor(model => model.NotificationId, new { value = "0" })
+@Html.HiddenFor(model => model.NotificationProductId, new { value = "0" })
+<div class="form-row row-fluid">
+    <div class="span4">
+        <div style="max-width: 90%; max-height: 300px; border: 1px solid #ccc; padding: 5px;
+            text-align: center; float: left">
+            <div id="prdimagecontainer" class="btg-upload">
+                <span class="browse">Upload image</span>
+                <div>
+                    <input id="prdImage" type="file" name="prdImage" style="cursor: pointer; position: absolute;
+                        opacity: 0; top: 0px; right: 0px; font-size: 102px; height: 102px;" accept="image/jpeg,image/png" />
+                </div>
+            </div>
+            <div id="uploadedprdimagecontainer">
+                <div class="uploadedprdImage" style="max-width: 250px">
+                    <img src="@Model.ProductImage" />
+                    <a class="btn btn-small btn-primary" href="#" id="btnremoveprdimage" style="float: right;
+                        margin-top: 3px;">Remove</a>
+                </div>
+            </div>
+        </div>
+        @Html.HiddenFor(model => model.ProductImage)
+    </div>
+    <div class="span8">
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    @Html.LabelFor(model => model.ProductName, new { @class = "form-label span3" })
+                    <div class="span9">
+                        @Html.TextBoxFor(model => model.ProductName, new { @class = "row-fluid" })
+                        @* <span class="help-block blue span8">The title will be displayed to users in the app.</span>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    @Html.LabelFor(model => model.Description, new { @class = "form-label span3" })
+                    <div class="span9">
+                        @Html.TextAreaFor(model => model.Description, new { @class = "row-fluid", maxlength = "250", rows = "3" })
+                        <span class="help-block blue span8">Enter Description not more than 250 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    @Html.LabelFor(model => model.BarCode, new { @class = "form-label span3" })
+                    <div class="span9">
+                        @Html.TextBoxFor(model => model.BarCode, new { @class = "row-fluid" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    @Html.LabelFor(model => model.Sizes, new { @class = "form-label span3" })
+                    <div class="span3">
+                        Size1<br />
+                        <input type="text" id="Size1" name="Size" value="@(Model.Sizes != null ? Model.Sizes.Split('|')[0] : "")"/>
+                    </div>
+                    <div class="span3">
+                        Size2<br />
+                        <input type="text" id="Size2" name="Size" value="@(Model.Sizes != null ? Model.Sizes.Split('|')[1] : "")"/>
+                    </div>
+                    <div class="span3">
+                        Size3<br />
+                        <input type="text" id="Size3" name="Size" value="@(Model.Sizes != null ? Model.Sizes.Split('|')[2] : "")"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    @Html.LabelFor(model => model.Prices, new { @class = "form-label span3" })
+                    <div class="span3">
+                        Price1<br />
+                        <input type="text" id="Price1" name="Price" value="@(Model.Prices != null ? Model.Prices.Split('|')[0] : "")"/>
+                    </div>
+                    <div class="span3">
+                        Price2<br />
+                        <input type="text" id="Price2" name="Price" value="@(Model.Prices != null ? Model.Prices.Split('|')[1] : "")"/>
+                    </div>
+                    <div class="span3">
+                        Price3<br />
+                        <input type="text" id="Price3" name="Price" value="@(Model.Prices != null ? Model.Prices.Split('|')[2] : "")"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row row-fluid">
+        <div class="span12">
+            <input style="float: right; margin: 2% 2% 0 31.3%;" type="submit" value="Save Product Info"
+                class="btn btn-large btn-primary" />
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    //-----------------------------------------Product------------------------------------------------------------------------------------------------
+    function ProductImage() {
+        if ($("#NotificationProduct_ProductImage").val() != '') {
+            $("#uploadedprdimagecontainer").show();
+            $("#prdimagecontainer").hide();
+        }
+        else {
+            $("#uploadedprdimagecontainer").hide();
+            $("#prdimagecontainer").show();
+        }
+    }
+    $("#btnremoveprdimage").click(function () {
+        $("#uploadedprdimagecontainer").hide();
+        $("#prdimagecontainer").show();
+        $("#NotificationProduct_ProductImage").val('');
+        ProductImage();
+    });
+    ProductImage();
+    $(function () {
+        $('#prdImage').change(function () {
+            var formData = new FormData();
+            var fileControl = document.getElementById("prdImage");
+            var file = fileControl.files[0];
+            var types = $(fileControl).attr("accept");
+            var error;
+            if ($(fileControl).attr("accept") && !($.inArray(file.type, types.split(',')) > -1)) {
+                error = 'This file type is not supported. Supported types are ' + types;
+            } else if (!file.size) {
+                error = 'Cannot read file.';
+            }
+            if (error) {
+                showNotification({ message: error, type: "error", autoClose: true, duration: 5 });
+                return false;
+            }
+            formData.append('file', file);
+            var url = $("#NotificationProduct_ProductImage").val();
+            formData.append("ImageURL", url);
+            $("#content").showLoading();
+            $.ajax({
+                url: '@Url.Action("UploadProductImage", "Notification")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                complete: function () {
+                    $('#content').hideLoading();
+                },
+                success: function (result) {
+                    if (result.Status == "Ok") {
+                        $(".uploadedprdImage img").attr('src', result.ReturnUrl);
+                        $("#NotificationProduct_ProductImage").val(result.ReturnUrl);
+                        $("#uploadedprdimagecontainer").show();
+                        $("#prdimagecontainer").hide();
+                    }
+                    else {
+                        showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                    }
+                },
+                error: function (result) {
+                    showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                }
+            });
+        });
+    });
+
+    $(document).ready(function () {
+        $("#frmProduct").validate({
+            rules: {
+                NotificationProduct_ProductName: { required: true, maxlength: 100 },
+                NotificationProduct_Description: { maxlength: 250 },
+                NotificationProduct_BarCode: { maxlength: 50 }
+            },
+            messages: {
+                NotificationProduct_ProductName: { required: "Required!", maxlength: "Seems too long." },
+                NotificationProduct_Description: "Seems too long.",
+                NotificationProduct_BarCode: "Seems too long."
+            }
+        });
+        $('#frmProduct').submit(function () {
+            if ($(this).validate().form()) {
+                $('#content').showLoading();
+                var sizes = '';
+                $('input[name=Size]').each(function (i, ob) {
+                    sizes = sizes + $(ob).val() + '|';
+                });
+
+                var prices = '';
+                $('input[name=Price]').each(function (i, ob) {
+                    prices = prices + $(ob).val() + '|';
+                });
+                var data = $(this).serializeArray();
+                data.push({ name: 'PSizes', value: sizes });
+                data.push({ name: 'PPrices', value: prices });
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: data,
+                    complete: function () {
+                        $('#content').hideLoading();
+                    },
+                    success: function (result) {
+                        if (result.Status == "Ok") {
+                            $("#NotificationProduct_NotificationProductId").val(result.UniqueId);
+                            showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                        }
+                        else {
+                            showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                        }
+                    },
+                    error: function (result) {
+                        showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                    }
+                });
+            }
+            return false;
+        });
+    });
+    </script>

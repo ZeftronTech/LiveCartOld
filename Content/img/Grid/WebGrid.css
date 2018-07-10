@@ -1,0 +1,65 @@
+﻿img
+        {
+            border:0px;  	
+        }
+       .webgrid  
+       {  
+           border: 1px;
+           border-collapse: collapse;                  
+
+        }
+         .webgrid-table
+         {
+        font-family: "Trebuchet MS" , Arial, Helvetica, sans-serif;
+        font-size: 1.2em;
+        width: 90%;
+        display: table;
+        border-collapse: separate;
+        border: solid 1px #98BF21;
+        background-color: white;
+    }
+    .webgrid-table td, th
+    {
+        border: 1px solid #98BF21;
+        padding: 3px 7px 2px;
+    }
+
+    .webgrid a    
+    {
+    	color: #000;
+
+    }
+.webgrid-header       
+{
+     padding: 6px 5px;                      
+     text-align: left;background-color: #DEE0E0;
+     height: 40px;
+     
+  }
+  .webgrid-footer  { padding: 6px 5px; 
+  text-align: center;  
+  background-color: #e8eef4; 
+  border-top: 2px solid #D6E8FF;    
+  height: 30px;  
+  border-bottom: 2px solid #D6E8FF;   
+  border-left: 2px solid #D6E8FF;  
+  border-right: 2px solid #D6E8FF; 
+  margin-left:200px;
+  }  
+  .webgrid-alternating-row
+   {
+  height: 30px; 
+  background-color:  #F7F9FA;
+  
+ }   
+ .webgrid-row-style {
+ height: 30px; 
+ background-color:#EDEDED;
+ 
+ border:1px;
+ }
+ .webgrid-selected-row
+ { 
+ height: 50px;  background-color: #F5E0EB; padding-top:5px;  }
+
+

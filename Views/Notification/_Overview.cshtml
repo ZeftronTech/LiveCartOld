@@ -1,0 +1,166 @@
+﻿@model LiveKart.Entities.Notification
+
+    @Html.HiddenFor(model => model.NotificationID, new { value = "0" })
+    <div class="form-row row-fluid">
+        <div class="span4">
+            <div style="max-width: 90%; max-height: 300px; border: 1px solid #ccc; padding: 5px;
+                text-align: center; float: left">
+                <div id="notimagecontainer" class="btg-upload">
+                    <span class="browse">Upload image</span>
+                    <div>
+                        <input id="notImage" type="file" name="notImage" style="cursor: pointer; position: absolute;
+                            opacity: 0; top: 0px; right: 0px; font-size: 102px; height: 102px;" accept="image/jpeg,image/png" />
+                    </div>
+                </div>
+                <div id="uploadednotimagecontainer">
+                    <div class="uploadedNotImage" style="max-width: 250px">
+                        <img src="@Model.NotificationImage" />
+                        <a class="btn btn-small btn-primary" href="#" id="btnremovenotimage" style="float: right; margin-right: 115px; margin-top: 3px;">Remove</a>
+                    </div>
+                </div>
+            </div>
+            @Html.HiddenFor(model => model.NotificationImage)
+        </div>
+        <div class="span8">
+            <div class="form-row row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        @Html.LabelFor(model => model.NotificationTitle, new { @class = "form-label span3" })
+                        <div class="span9">
+                            @Html.TextBoxFor(model => model.NotificationTitle, new { @class = "row-fluid" })
+                            @* <span class="help-block blue span8">The title will be displayed to users in the app.</span>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        @Html.LabelFor(model => model.Description, new { @class = "form-label span3" })
+                        <div class="span9">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "row-fluid", maxlength = "250", rows = "3" })
+                            <span class="help-block blue span8">Enter Description not more than 250 characters.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row row-fluid">
+        <div class="span12">
+            <input style="float: right; margin: 2% 2% 0 31.3%;" type="submit" value="Create Campaign" id="submitnotification"
+                class="btn btn-large btn-primary" />
+        </div>
+    </div>
+
+     <script type="text/javascript">
+         //---------------------------Notification-----------------------------------------------------------------------------------
+         function NotificationImage() {
+             if ($("#NotificationImage").val() != '') {
+                 $("#uploadednotimagecontainer").show();
+                 $("#notimagecontainer").hide();
+             }
+             else {
+                 $("#uploadednotimagecontainer").hide();
+                 $("#notimagecontainer").show();
+             }
+         }
+         $("#btnremovenotimage").click(function () {
+             $("#uploadednotimagecontainer").hide();
+             $("#notimagecontainer").show();
+             $("#NotificationImage").val('');
+             NotificationImage();
+         });
+         NotificationImage();
+         $(function () {
+             $('#notImage').change(function () {
+                 var formData = new FormData();
+                 var fileControl = document.getElementById("notImage");
+                 var file = fileControl.files[0];
+                 var types = $(fileControl).attr("accept");
+                 var error;
+                 if ($(fileControl).attr("accept") && !($.inArray(file.type, types.split(',')) > -1)) {
+                     error = 'This file type is not supported. Supported types are ' + types;
+                 } else if (!file.size) {
+                     error = 'Cannot read file.';
+                 }
+                 if (error) {
+                     showNotification({ message: error, type: "error", autoClose: true, duration: 5 });
+                     return false;
+                 }
+                 formData.append('file', file);
+                 var url = $("#NotificationImage").val();
+                 formData.append("ImageURL", url);
+                 $("#content").showLoading();
+                 $.ajax({
+                     url: '@Url.Action("UploadNotificationImage", "Notification")',
+                     type: "POST",
+                     data: formData,
+                     processData: false,
+                     contentType: false,
+                     complete: function () {
+                         $('#content').hideLoading();
+                     },
+                     success: function (result) {
+                         if (result.Status == "Ok") {
+                             $(".uploadedNotImage img").attr('src', result.ReturnUrl);
+                             $("#NotificationImage").val(result.ReturnUrl);
+                             $("#uploadednotimagecontainer").show();
+                             $("#notimagecontainer").hide();
+                         }
+                         else {
+                             showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                         }
+                     },
+                     error: function (result) {
+                         showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                     }
+                 });
+             });
+         });
+
+         $(document).ready(function () {
+             $("#frmOverview").validate({
+                 rules: {
+                     NotificationTitle: { required: true, maxlength: 100 },
+                     Description: { maxlength: 250 }
+                 },
+                 messages: {
+                     NotificationTitle: { required: "Required!", maxlength: "Seems too long." },
+                     Description: "Seems too long."
+                 }
+             });
+             $('#frmOverview').submit(function () {
+                 if ($(this).validate().form()) {
+                     $('#content').showLoading();
+                     $.ajax({
+                         url: this.action,
+                         type: this.method,
+                         data: $(this).serialize(),
+                         complete: function () {
+                             $('#content').hideLoading();
+                         },
+                         success: function (result) {
+                         	if (result.Status == "Ok") {
+                         		debugger;
+                                 $("#NotificationID").val(result.UniqueId);
+                                 $("#Alerts_NotificationId").val(result.UniqueId);
+                                 $("#Offer_NotificationId").val(result.UniqueId);
+                                 $("#Schedule_NotificationId").val(result.UniqueId);
+                                 $("#masthead").find("h1").text($("#NotificationTitle").val())
+                                 showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                             }
+                             else {
+                                 showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                             }
+                         },
+                         error: function (result) {
+                             showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                         }
+                     });
+                 }
+                 return false;
+             });
+         });
+    </script>
+

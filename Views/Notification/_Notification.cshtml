@@ -1,0 +1,284 @@
+﻿@model IEnumerable<LiveKart.Entities.NotificationAlert>
+@{
+    List<LiveKart.Entities.NotificationAlert> alerts = Model.ToList();   
+}
+<input type="hidden" id="Alerts_NotificationId" name="Alerts.NotificationId" value="@alerts[0].NotificationId" />
+<div class="form-row row-fluid">
+    <div class="span12">
+        <div class="switch" style="width: 200px">
+            <input type="radio" class="switch-input" name="NType" value="1"
+                id="rdProximityBased" @(Model.Count() > 1 ? "checked" : "")>
+            <label for="rdProximityBased" class="switch-label switch-label-off">
+                Proximity Based</label>
+            <input type="radio" class="switch-input" name="NType" value="0"
+                id="rdAnywhere" @(Model.Count() == 1 ? "checked" : "")>
+            <label for="rdAnywhere" class="switch-label switch-label-on">
+                Anywhere</label>
+            <span class="switch-selection"></span>
+        </div>
+        <input type="hidden" name="NotificationType" id="NotificationType" value="@(Model.Count() > 1 ? "1" : "0")" />
+        <br />
+    </div>
+</div>
+<div class="form-row row-fluid" id="pnlanywhere">
+    <input type="hidden" id="NotificationAlertId" name="NotificationAlertId" value="@(Model.Count() == 1 ? alerts[0].NotificationAlertId : 0)" />
+    <input type="hidden" id="NotificationImage" name="NotificationImage" value="@(Model.Count() == 1 ? alerts[0].NotificationImage : "")" />
+    <div class="span8">
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <label for="NotificationTitle" class="form-label span3">
+                        Alert Header</label>
+                    <div class="span9">
+                        <input type="text" id="NotificationTitle" name="NotificationTitle" value="@(Model.Count() == 1 ? alerts[0].NotificationTitle : "")" class="row-fluid" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row row-fluid">
+            <div class="span12">
+                <div class="row-fluid">
+                    <label for="Description" class="form-label span3">
+                        Alert Message</label>
+                    <div class="span9">
+                        <textarea id="Description" name="Description" rows="3" class="row-fluid">@(Model.Count() == 1 ? alerts[0].Description : "")</textarea>
+                        <span class="help-block blue span8">Enter Description not more than 250 characters.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Proximity based*@
+<div id="pnlproximity">
+    @if (Model.Count() > 1)
+    {
+        for (int j = 1; j <= 3; j++)
+        {
+            string title = "NotificationTitle" + j.ToString();
+            string desc = "Description" + j.ToString();
+            string img = "NotificationImage" + j.ToString();
+            string alertId = "NotificationAlertId" + j.ToString();
+            var item = alerts[j - 1];
+        <input type="hidden" id="@alertId" name="@alertId" value="@item.NotificationAlertId" />   
+        <div class="form-row row-fluid">
+            <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+                margin: 10px 0 10px 0">
+                <h5>
+                    @(j == 1 ? "Far (15 - 25 FT)" : j == 2 ? "Near (10 - 15 FT)" : "Close (< 10 FT)")</h5>
+            </div>
+        </div>  
+        <div class="form-row row-fluid">
+            <input type="hidden" id="@img" name="@img" value="@(item.NotificationImage)" />
+            <div class="span8">
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <label for="@title" class = "form-label span3">
+                                Message Title</label>
+                            <div class="span9">
+                                <input type="text" id="@title" name="@title" value="@item.NotificationTitle" class="row-fluid" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <label for="@desc" class = "form-label span3">
+                                Message Description</label>
+                            <div class="span9">
+                                <textarea id="@desc" name="@desc" rows="3" class="row-fluid">@item.Description</textarea>
+                                <span class="help-block blue span8">Enter Description not more than 250 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="form-row row-fluid">
+        </div>
+            </div>
+            <div class="span2">
+            </div>
+            <div class="span2">                
+                <div class="toggle">
+                    <input type="checkbox" id="Active@(j)" name="Active@(j)" @(item.Active ? "checked" : "") />
+                    <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                </div>
+            </div>
+        </div>
+        }
+    }
+    else
+    {
+        for (int i = 1; i <= 3; i++)
+        {
+            string title = "NotificationTitle" + i.ToString();
+            string desc = "Description" + i.ToString();
+            string img = "NotificationImage" + i.ToString();
+            string alertId = "NotificationAlertId" + i.ToString();
+            
+        <input type="hidden" id="@alertId" name="@alertId" value="0" />
+        <div class="form-row row-fluid">
+            <div class="span12" style="background-color: #2E6AAF; color: #fff; padding: 3px;
+                margin: 10px 0 10px 0">
+                <h5>
+                    @(i == 1 ? "Far (15 - 25 FT)" : i == 2 ? "Near (10 - 15 FT)" : "Close (< 10 ft)")</h5>
+            </div>
+        </div>  
+        <div class="form-row row-fluid">
+            <input type="hidden" id="@img" name="@img" value="" />
+            <div class="span8">
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <label for="@title" class="form-label span3">
+                                Alert Header</label>
+                            <div class="span9">
+                                <input type="text" id="@title" name="@title" value="" class="row-fluid" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row row-fluid">
+                    <div class="span12">
+                        <div class="row-fluid">
+                            <label for="@desc" class="form-label span3">
+                                Alert Message</label>
+                            <div class="span9">
+                                <textarea id="@desc" name="@desc" rows="3" class="row-fluid"></textarea>
+                                <span class="help-block blue span8">Enter Description not more than 250 characters.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div class="form-row row-fluid">
+        </div>
+            </div>
+            <div class="span2">
+            </div>
+            <div class="span2">
+                <div class="toggle">
+                    <input type="checkbox" id="Active@(i)" name="Active@(i)" checked="checked" />
+                    <span class="chk"></span><span class="labels"></span><span class="bg"></span>
+                </div>
+            </div>
+        </div>
+        }
+    }
+</div>
+<div class="form-row row-fluid">
+    <div class="span12">
+        <input style="float: right; margin: 2% 2% 0 31.3%;" type="submit" value="Create Alerts"
+            id="submitnotification" class="btn btn-large btn-primary" />
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#overview").addClass("active");
+
+        $(".nav-tabs li a").click(function () {
+            if ($(this).hasClass('active')) { return false; }
+            if (($(this).attr("href") == "#notifications" || $(this).attr("href") == "#offer" || $(this).attr("href") == "#schedule") && ($("#NotificationId").val() == "" || $("#NotificationId").val() == "0")) {
+                showNotification({ message: "Please provide campaign details first.", type: "information", autoClose: true, duration: 4 });
+                return false;
+            }
+            $(".tab-pane").removeClass("active");
+            $($(this).attr('href')).addClass("active");
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //        if ($("#NotificationId").val() > 0) {
+        //            $('input:radio[name=NType]').attr("disabled", "disabled");
+        //        }
+        $('input:radio[name=NType]').change(function () {
+            if ($(this).val() == '1') {
+                $("#pnlproximity").show();
+                $("#pnlanywhere").hide();
+                $("#NotificationType").val('1');
+            } else {
+                $("#pnlanywhere").show();
+                $("#pnlproximity").hide();
+                $("#NotificationType").val('0');
+            }
+        });
+        $('input:radio[name=NType]:checked').trigger('change');
+    });
+</script>
+<script type="text/javascript">
+    //---------------------------Notification-----------------------------------------------------------------------------------
+    $(document).ready(function () {
+        $("#frmNotification").validate({
+            rules: {
+                NotificationTitle: { required: true, maxlength: 100 },
+                NotificationTitle1: { required: true, maxlength: 100 },
+                NotificationTitle2: { required: true, maxlength: 100 },
+                NotificationTitle3: { required: true, maxlength: 100 },
+                Description: { required: true, maxlength: 250 },
+                Description1: { required: true, maxlength: 250 },
+                Description2: { required: true, maxlength: 250 },
+                Description3: { required: true, maxlength: 250 }
+            },
+            messages: {
+                NotificationTitle: { required: "Required!", maxlength: "Seems too long." },
+                NotificationTitle1: { required: "Required!", maxlength: "Seems too long." },
+                NotificationTitle2: { required: "Required!", maxlength: "Seems too long." },
+                NotificationTitle3: { required: "Required!", maxlength: "Seems too long." },
+                Description: { required: "Required!", maxlength: "Seems too long." },
+                Description1: { required: "Required!", maxlength: "Seems too long." },
+                Description2: { required: "Required!", maxlength: "Seems too long." },
+                Description3: { required: "Required!", maxlength: "Seems too long." }
+            }
+        });
+        $('#frmNotification').submit(function () {
+            if (!$('#Active1').prop("checked")) {
+                if ($("#NotificationTitle1").val() == '') { $("#NotificationTitle1").val('x'); }
+                if ($("#Description1").val() == '') { $("#Description1").val('x'); }
+            }
+            if (!$('#Active2').prop("checked")) {
+                if ($("#NotificationTitle2").val() == '') { $("#NotificationTitle2").val('x'); }
+                if ($("#Description2").val() == '') { $("#Description2").val('x'); }
+            }
+            if (!$('#Active3').prop("checked")) {
+                if ($("#NotificationTitle3").val() == '') { $("#NotificationTitle3").val('x'); }
+                if ($("#Description3").val() == '') { $("#Description3").val('x'); }
+            }
+            if ($(this).validate().form()) {
+                if (!$('#Active1').prop("checked")) {
+                    if ($("#NotificationTitle1").val() == 'x') { $("#NotificationTitle1").val(''); }
+                    if ($("#Description1").val() == 'x') { $("#Description1").val(''); }
+                }
+                if (!$('#Active2').prop("checked")) {
+                    if ($("#NotificationTitle2").val() == 'x') { $("#NotificationTitle2").val(''); }
+                    if ($("#Description2").val() == 'x') { $("#Description2").val(''); }
+                }
+                if (!$('#Active3').prop("checked")) {
+                    if ($("#NotificationTitle3").val() == 'x') { $("#NotificationTitle3").val(''); }
+                    if ($("#Description3").val() == 'x') { $("#Description3").val(''); }
+                }
+                $('#content').showLoading();
+                $.ajax({
+                    url: this.action,
+                    type: this.method,
+                    data: $(this).serialize(),
+                    complete: function () {
+                        $('#content').hideLoading();
+                    },
+                    success: function (result) {
+                        if (result.Status == "Ok") {
+                            showNotification({ message: result.Message, type: "success", autoClose: true, duration: 4 });
+                        }
+                        else {
+                            showNotification({ message: result.Message, type: "warning", autoClose: true, duration: 4 });
+                        }
+                    },
+                    error: function (result) {
+                        showNotification({ message: result.Message, type: "error", autoClose: true, duration: 4 });
+                    }
+                });
+            }
+            return false;
+        });
+    });
+</script>
